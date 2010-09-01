@@ -21,12 +21,14 @@ folder =  '/Volumes/Data/Lab Data/Shadow_data/Processed';
 
 emb_roots = {'MP09_22C_y_hb';
             'MP02_22C_y_hb';
-            'MP02_30C_y_hb'
-            };
+            'MP02_30C_y_hb';
+            'MP02_30C_LacZ_hb'   % yes it's actually yellow
+            };  
           
 
 names = {'2 enhancers, 22C';
          'no shadow, 22C';
+         'no shadow, 30C'
          'no shadow, 30C'
          };
 
@@ -40,7 +42,7 @@ p22_root = 'hbP_22C_LacZ_hb';
 p29_root = 'C55_29C_LacZ_hb';
 
 
-N = 70;
+N = 90;
 K = length(emb_roots); 
 G= length(names);
 
@@ -61,7 +63,7 @@ xmin = .2; xmax = .8; ymin = .25; ymax = .75;
 % as fractions of the original image dimensions.  
 
 for z=1:K % k=2;
-    for n=1:N
+    for n=   1:N
         if n<10
             emb = ['0',num2str(n)];
         else
@@ -73,7 +75,8 @@ for z=1:K % k=2;
         % get the indices of all nuclei in green that are not also red.  
         % require these nuclei also fall in the 'region' for red nuclei.  
        % s29_miss_cnt(n) =  length(intersect(setdiff(pts2,pts1), ptr_nucin2));
-           miss_cnt{z}(n) =  length(intersect(setdiff(pts2,pts1), ptr_nucin2));  
+          % miss_cnt{z}(n) =  length(intersect(setdiff(pts2,pts1), ptr_nucin2));  
+           miss_cnt{z}(n) = anlz_major_reg(folder,emb_roots{z},emb );
            miss_rate{z}(n) = miss_cnt{z}(n)/length(pts2); 
            lowon{z}(n) = lowon_fxn(H,handles,nin2,ptr_nucin2,emb); 
            %lowon{z}(n) = lowon_fxn(H,handles,all_nucs,pts2,nin2,Cell_bnd);  
@@ -95,8 +98,11 @@ for z=1:K % k=2;
 end
 
 
+% save hb_shadow_yellow_data;
+[miss_cnt,miss_rate,nd,lowon] = merge_data(3,4,N,miss_cnt,miss_rate,nd,lowon);
 
 
+G=3;
 %%
  % clear all; load snail_shadow_data;
 
@@ -107,7 +113,7 @@ plot( log2(sort(ND(:))) ,'r.');
 cc14 =cell(1,G); cc13 = cell(1,G); cc12 = cell(1,G); 
 for z=1:G
     cc14{z} = log2(ND(:,z))>9;
-    cc13{z} = log2(ND(:,z))<9 & log2(ND(:,z))>8;
+    cc13{z} = log2(ND(:,z))<9  & log2(ND(:,z))>8;
     cc12{z} = log2(ND(:,z))<8;
 end
 
@@ -168,38 +174,38 @@ V= plot_miss;
     'YMinorTick','on'); title(xlab);
     set(gcf,'color','k');
 
-%% Plot Total mRNA variability distribuitons 
-
-xlab = 'variability in total transcript (\sigma/\mu)';
-
-
-plot_lowon = cell(1,G); 
-for k=1:G; plot_lowon{k} = lowon{k}(cc14{k}); end
-figure(2); clf;
- colordef black; set(gcf,'color','k');
-%colordef white; set(gcf,'color','w');
-
-
-%  x = linspace(0,1,20);
-%   xx = linspace(0,1,100); 
-%  method = 'pcubic';
-% sigma = .1; 
-% CompDist(plot_lowon,x,xx,method,sigma,names,xlab)
-
-BoxDist(plot_lowon,names,xlab);
-set(gcf,'color','k');
-
-V= plot_lowon;
-    P_var = zeros(G,G); 
-    for i=1:G
-        for j=1:G   
-   P_var(i,j) =  log10(ranksum(V{i},V{j}));
-        end
-    end
-    
-    figure(6); clf; imagesc(P_var); colorbar;  colormap('gray');
-    set(gca,'YtickLabel', str2mat(names{:}),'YTick',1:6,'fontsize',15,...
-    'YMinorTick','on'); title(xlab);
-    set(gcf,'color','k');
-
-%
+% %% Plot Total mRNA variability distribuitons 
+% 
+% xlab = 'variability in total transcript (\sigma/\mu)';
+% 
+% 
+% plot_lowon = cell(1,G); 
+% for k=1:G; plot_lowon{k} = lowon{k}(cc14{k}); end
+% figure(2); clf;
+%  colordef black; set(gcf,'color','k');
+% %colordef white; set(gcf,'color','w');
+% 
+% 
+% %  x = linspace(0,1,20);
+% %   xx = linspace(0,1,100); 
+% %  method = 'pcubic';
+% % sigma = .1; 
+% % CompDist(plot_lowon,x,xx,method,sigma,names,xlab)
+% 
+% BoxDist(plot_lowon,names,xlab);
+% set(gcf,'color','k');
+% 
+% V= plot_lowon;
+%     P_var = zeros(G,G); 
+%     for i=1:G
+%         for j=1:G   
+%    P_var(i,j) =  log10(ranksum(V{i},V{j}));
+%         end
+%     end
+%     
+%     figure(6); clf; imagesc(P_var); colorbar;  colormap('gray');
+%     set(gca,'YtickLabel', str2mat(names{:}),'YTick',1:6,'fontsize',15,...
+%     'YMinorTick','on'); title(xlab);
+%     set(gcf,'color','k');
+% 
+% %
