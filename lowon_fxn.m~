@@ -1,0 +1,77 @@
+
+%% lowon_fxn.m
+
+% Alistair Boettiger                                 Date Begun: 03/17/2010
+% Levine Lab                      This Version Functional Since: 04/03/2010
+%                                                 Last Modified: 04/04/2010
+
+%% Description
+% Compute relative varabililty in total intensity between nuclei.
+% Written for Plot_DotComps family code to analyse shadow data. 
+%
+%
+%% Updates
+% updated 04/03/2010 to normalize intensities before trying to compare
+% relative varibility in total transcript counts
+
+
+%% Source Code
+
+function [lowon, corr_var] = lowon_fxn(H,handles,nin2,ptr_nucin2,emb)
+%lowon = lowon_fxn(H,handles,all_nucs,pts2,nin2,Cell_bnd)
+ 
+    cell_int = H; 
+       Nnucs = max(H(:));
+        mu_I = zeros(Nnucs,1); 
+       % mu_N = zeros(Nnucs,1); sig_I = zeros(Nnucs,1);
+        reg_data = regionprops(H,'PixelIdxList');
+            for i=1:Nnucs; 
+                pixes = reg_data(i).PixelIdxList;      
+                mu_I(i) = median(handles.Im1(pixes));
+              %  mu_N(i) = median(handles.In(pixes));
+              %  sig_I(i) = std(double(handles.Im1(pixes));             
+                cell_int(pixes) = mu_I(i);
+            end
+ % lowon = std(mu_I(nin2))/mean(mu_I(nin2));
+      mvar = mu_I(nin2)-min(mu_I(nin2));
+      mvar = mvar/max(mvar); 
+    
+      cvar =    mu_I-min(mu_I);
+      cvar = cvar/max(cvar); 
+      
+        lowon = std(mvar)./mean(mvar);    
+
+N = sum(nin2);
+C = handles.conn_map; 
+eta = zeros(1,N); 
+
+      for i=1:N; % loop through nucs in region
+          nuc = ptr_nucin2(i); 
+          neibs = find(C(nuc,:)>0);  
+%        %   figure(1); clf; M = ismember(H,neibs); imshow(M);
+          sig = std(cvar(neibs));
+          mu = mean(cvar(neibs));
+          eta(i) = sig/mu; 
+      end
+
+%             
+            
+       corr_var = mean(eta);       
+ 
+       
+     %  %   Plotting 
+%           cell_int = uint8( 255*cell_int./max(cell_int(:))  );     
+%             figure(3); clf; 
+%        [h,w] = size(H);
+%                 Io = uint8(zeros(h,w,3));
+%                 Io(:,:,1) = imadd(uint8(cell_int),handles.Im1); 
+%                 Io(:,:,2) =  handles.Im2 ;% imadd(handles.Im2,uint8(255*L2.*Cell_bnd));
+%                 Io(:,:,3) =   handles.In; 
+%                clf; imshow(Io); 
+%                title([emb, '   eta = ' num2str(lowon,2), '  corr var=',...
+%                    num2str(corr_var,2),'   mu =',num2str(mean(mu_I(nin2)),2)],...
+%                    'FontSize',16);        
+%              figure(1); clf; hist(mu_I(nin2));
+%                pause(1); 
+% % %                
+         

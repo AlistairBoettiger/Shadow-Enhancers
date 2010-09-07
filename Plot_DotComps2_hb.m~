@@ -17,8 +17,6 @@
 %% Source Code
 clear all;
 
-
-
 folder =  '/Volumes/Data/Lab Data/Shadow_data/Processed';
 
 emb_roots = {'MP09_22C_y_hb';
@@ -106,9 +104,6 @@ for z=1:K % k=2;
 end
 
 close all; 
-
-
-
  %  save hb_shadow_yellow_data;   % load hb_shadow_yellow_data;
 [miss_cnt,miss_rate,nd,lowon] = merge_data(3,4,N,miss_cnt,miss_rate,nd,lowon);
 

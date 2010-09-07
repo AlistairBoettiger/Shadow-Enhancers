@@ -17,7 +17,7 @@
 %% Source Code
 clear all;
 
-folder =  '/Volumes/Data/Lab Data/Shadow_data/Processed';
+folder =  '/Volumes/Data/Lab Data/Shadow_data';
 s29_root = 'C33_29C_LacZ_hb';
 sp29_root = 'hb2enh_29C_LacZ_hb';
 sp22_root = 'hb2enh_22C_LacZ_hb';

@@ -1,0 +1,19 @@
+
+
+%% NucDensity.m
+
+function nuc_density = NucDensity(cent,limits)
+
+
+
+%limits = [200,1000,150,350]; 
+
+xmin = limits(1);
+xmax = limits(2);
+ymin = limits(3);
+ymax = limits(4);
+
+%  figure(1); clf; scatter(cent(:,1),cent(:,2));
+%  hold on; plot([xmin,xmax,xmax,xmin,xmin],[ymin,ymin,ymax,ymax,ymin],'r'); 
+
+nuc_density = sum(  cent(:,2) >ymin & cent(:,2) < ymax &  cent(:,1) > xmin & cent(:,1)<xmax )  ;
