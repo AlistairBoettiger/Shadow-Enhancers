@@ -1,4 +1,4 @@
-function mc = anlz_major_reg(folder,emb_roots,emb)
+function [mc, ptr_nucin2] = anlz_major_reg(folder,emb_roots,emb)
 
     load([folder,'/',emb_roots,emb,'_data.mat']);   
     
@@ -113,49 +113,49 @@ Cell_bnd = logical(Nuc_line-Nuc_cntr);
 %      title('disambiguation of mRNA 1'); 
      
   
-% Outline missing nuclei  load temp_dat;
-       L2n1 = (L2-L1) > 0; 
-      L2n1a = (L2a - L1a) > 0;
- figure(1); clf;
-    Io = uint8(zeros(h,w,3));
-    Io(:,:,1) = imadd(uint8(0*L2n1a.*Cell_bnd),1*handles.Im1); 
-    Io(:,:,2) =  imadd(uint8(255*Reg1.*L2n1a.*Cell_bnd),1*handles.Im2); % imadd(uint8(255*Cell_bnd),1*handles.Im2);  %
-    Io(:,:,3) =   imadd(uint8(255*L2n1a.*Cell_bnd),.8*handles.In); % uint8(255*Cell_bnd); %
-    % DI = uint8(bsxfun(@times,double(Io)/255,double(handles.In)));
-  clf; imshow(Io); hold on;
-plot(0,0,'b','LineWidth',3); plot(0,0,'c','LineWidth',3); 
-legend('off, not in region','off, in region','still off');
- %  plot(rna_x1,rna_y1,'r.','MarkerSize',5);
-% plot(rna_x2,rna_y2,'g.','MarkerSize',5);
-     title('transcription activity difference'); 
+% % Outline missing nuclei  load temp_dat;
+%        L2n1 = (L2-L1) > 0; 
+%       L2n1a = (L2a - L1a) > 0;
+%  figure(1); clf;
+%     Io = uint8(zeros(h,w,3));
+%     Io(:,:,1) = imadd(uint8(0*L2n1a.*Cell_bnd),1*handles.Im1); 
+%     Io(:,:,2) =  imadd(uint8(255*Reg1.*L2n1a.*Cell_bnd),1*handles.Im2); % imadd(uint8(255*Cell_bnd),1*handles.Im2);  %
+%     Io(:,:,3) =   imadd(uint8(255*L2n1a.*Cell_bnd),.8*handles.In); % uint8(255*Cell_bnd); %
+%     % DI = uint8(bsxfun(@times,double(Io)/255,double(handles.In)));
+%   clf; imshow(Io); hold on;
+% plot(0,0,'b','LineWidth',3); plot(0,0,'c','LineWidth',3); 
+% legend('off, not in region','off, in region','still off');
+%  %  plot(rna_x1,rna_y1,'r.','MarkerSize',5);
+% % plot(rna_x2,rna_y2,'g.','MarkerSize',5);
+%      title('transcription activity difference'); 
 
 
-%   
-  figure(2); clf; 
-    Io = uint8(zeros(h,w,3));
-    Io(:,:,1) = uint8(255*L2n1.*Reg1);
-     Io(:,:,2) = uint8(255*L2n1.*Reg1);
-     Io(:,:,3) = 2*handles.In;
-     Idif = uint8(bsxfun(@times,double(Io)/255,double(handles.In)));
-     imshow(Idif); hold on;
-
- %    
-    figure(6); clf; 
-    set(gcf,'color','k'); 
- subplot(2,1,1); 
-     Io = uint8(zeros(h,w,3));
-     Io(:,:,1) = uint8(255*L1);
-     Io(:,:,3) = 30*handles.In;
-     Ired = uint8(bsxfun(@times,double(Io)/255,double(handles.In)));
-     imshow(Ired); hold on;
-      %plot(rna_x1,rna_y1,'r.');  
- subplot(2,1,2); 
-     Io = uint8(zeros(h,w,3));
-     Io(:,:,2) = uint8(255*L2);
-     Io(:,:,3) = 30*handles.In;
-     Igreen = uint8(bsxfun(@times,double(Io)/255,double(handles.In)));
-     imshow(Igreen); hold on;
-% plot(rna_x2,rna_y2,'g.');
+% %   
+%   figure(2); clf; 
+%     Io = uint8(zeros(h,w,3));
+%     Io(:,:,1) = uint8(255*L2n1.*Reg1);
+%      Io(:,:,2) = uint8(255*L2n1.*Reg1);
+%      Io(:,:,3) = 2*handles.In;
+%      Idif = uint8(bsxfun(@times,double(Io)/255,double(handles.In)));
+%      imshow(Idif); hold on;
+% 
+%  %    
+%     figure(6); clf; 
+%     set(gcf,'color','k'); 
+%  subplot(2,1,1); 
+%      Io = uint8(zeros(h,w,3));
+%      Io(:,:,1) = uint8(255*L1);
+%      Io(:,:,3) = 30*handles.In;
+%      Ired = uint8(bsxfun(@times,double(Io)/255,double(handles.In)));
+%      imshow(Ired); hold on;
+%       %plot(rna_x1,rna_y1,'r.');  
+%  subplot(2,1,2); 
+%      Io = uint8(zeros(h,w,3));
+%      Io(:,:,2) = uint8(255*L2);
+%      Io(:,:,3) = 30*handles.In;
+%      Igreen = uint8(bsxfun(@times,double(Io)/255,double(handles.In)));
+%      imshow(Igreen); hold on;
+% % plot(rna_x2,rna_y2,'g.');
 %  
 %  
 %  figure(2); clf;

@@ -19,7 +19,7 @@
 %% Source Code:
 
 
-function CompDist(data,x,xx,method,sigma,names,xlab)
+function dist_var = CompDist(data,x,xx,method,sigma,names,xlab,F)
 % 
 %  x = linspace(0,1,12);
 %   xx = linspace(0,1,100); 
@@ -51,5 +51,5 @@ for k=1:G
     plot(xx,dist_var{k},'color',C(k,:),'LineWidth',3); hold on;
 end
 legend(legend_labels);
-xlabel(xlab,'FontSize',16); 
-set(gca,'FontSize',15);
+xlabel(xlab,'FontSize',F+1); 
+set(gca,'FontSize',F);

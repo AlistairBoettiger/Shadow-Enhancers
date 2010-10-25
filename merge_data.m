@@ -11,9 +11,10 @@
 %% Called from:
 % Plot_DotComs2_sna.m
 
+% has bugs
+% disabled function call until bugs can be fixed.
 
-
-function [miss_cnt,miss_rate,nd,lowon] = merge_data(a,b,N,miss_cnt,miss_rate,nd,lowon)
+function disabled 10/21/10 [miss_cnt,miss_rate,nd,lowon] = merge_data(a,b,N,miss_cnt,miss_rate,nd,lowon)
 
 % merge data seemlessly
 d_cnt = [nonzeros(miss_cnt{a}); nonzeros(miss_cnt{b})];

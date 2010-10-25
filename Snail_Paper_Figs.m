@@ -2,6 +2,38 @@
 clear all; 
 
 
+fout = '/Users/alistair/Documents/Berkeley/Levine_Lab/Projects/Shadow Enhancers/Results/';
+
+folder =  '/Volumes/Data/Lab Data/Shadow_data';
+%imn = '12.2_snaD_CyO-HbZ_29C_Bgal-sim_sna_01.tif'; % ,01,14,13
+imn = 'BAC7_snaD_HbZ_29C_sim-exon_sna_07.tif'; 
+I = imread([folder,'/',imn]);
+
+figure(1); clf; imshow(I);
+
+[h,w] = size(I(:,:,1));
+
+C = [1,1,0;
+    0,0,0;
+    0,.5,.5];
+
+T = [.3,1;
+    .12,1;
+    .26,.65];
+
+f = [1,2];
+
+I = im_recolor(I,C,T,f) ;
+figure(1); clf; imshow(I);
+
+Io = imresize(I,.5);
+
+
+figure(1); clf;  imshow(Io); 
+
+imwrite(Io,[fout,'/',imn]); 
+
+%%
 
 folder =  '/Volumes/Data/Lab Data/Shadow_data';
 %imn = '12.2_snaD_CyO-HbZ_29C_Bgal-sim_sna_01.tif'; % ,01,14,13
