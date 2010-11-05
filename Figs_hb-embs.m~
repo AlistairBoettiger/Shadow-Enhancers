@@ -10,6 +10,61 @@ clear all
 fout = '/Users/alistair/Documents/Berkeley/Levine_Lab/Projects/Shadow Enhancers/Results/';
 
 
+%% exiting mitosis MP09 at 30C
+
+
+folder = '/Volumes/Data/Lab Data/Shadow_data';
+emb = 'BAC09_30C_y_hb_11.tif';
+name = 'BAC09_30C_y_hb_11.tif';
+
+I = imread([folder,'/',emb]);  
+
+C = [2,2,0;
+    0,0,0;
+    0,.7,.7];
+
+T = [.13,.5;
+    .17,1;
+    .1,.9];
+
+f = [1,2];
+
+I = im_recolor(I,C,T,f) ;
+figure(1); clf; imshow(I);
+
+Io = imresize(I,1);
+
+
+imwrite(Io,[fout,name]);
+
+%% somewhat Young synchronous MP09 at 30C
+
+
+folder = '/Volumes/Data/Lab Data/Shadow_data';
+emb = 'BAC09_30C_y_hb_47.tif';
+name = 'BAC09_30C_y_hb_47.tif';
+
+I = imread([folder,'/',emb]);  
+
+C = [1,1,0;
+    2,0,0;
+    0,.7,.7];
+
+T = [.2,1;
+    .17,1;
+    .1,.9];
+
+f = [1,2];
+
+I = im_recolor(I,C,T,f) ;
+figure(1); clf; imshow(I);
+
+Io = imresize(I,1);
+
+
+imwrite(Io,[fout,name]);
+
+
 %%
 
    rt = 'MP02_22C_y'; 

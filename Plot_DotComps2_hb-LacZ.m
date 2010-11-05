@@ -5,14 +5,14 @@
 %
 % Alistair Boettiger                                   Date Begun: 03/05/10
 % Levine Lab                                     Functional Since: 03/06/10
-%                                                   Last Modified: 03/17/10
+%                                                   Last Modified: 10/26/10
 
 %% Description
 % comparison
 %
 %
 %% Updates
-
+% Changed age ID code, 10/26/10
 
 %% Source Code
 clear all;
@@ -22,7 +22,7 @@ folder =  '/Volumes/Data/Lab Data/Shadow_data/Processed';
 
 
 
-embs = { 'C33_29C_LacZ_hb';
+emb_roots ={ 'C33_29C_LacZ_hb';
  'hb2enh_29C_LacZ_hb';
  'hb2enh_22C_LacZ_hb';
 'C33_22C_LacZ_hb';
@@ -55,8 +55,9 @@ for z=1:K
 end
 
 
-xmin = .2; xmax = .8; ymin = .25; ymax = .75;
+xmin = .2; xmax = .9; ymin = .15; ymax = .4;
 % as fractions of the original image dimensions.  
+
 
 for z=1:K % k=2;
     for n=   1:N
@@ -74,7 +75,7 @@ for z=1:K % k=2;
           miss_cnt{z}(n) =  length(intersect(setdiff(pts2,pts1), ptr_nucin2));  
          %  miss_cnt{z}(n) = anlz_major_reg(folder,emb_roots{z},emb );
            miss_rate{z}(n) = miss_cnt{z}(n)/length(pts2); 
-           lowon{z}(n) = lowon_fxn(H,handles,nin2,ptr_nucin2,emb); 
+              [lowon{z}(n)] = lowon_fxn(H,handles,nin2,ptr_nucin2,[emb_roots{z},emb],0); 
            %lowon{z}(n) = lowon_fxn(H,handles,all_nucs,pts2,nin2,Cell_bnd);  
           
            if length(H) > 2000
@@ -84,7 +85,7 @@ for z=1:K % k=2;
            end
                
            lims =  round([xmin,xmax,ymin,ymax]*im_dim); 
-           nd{z}(n) = NucDensity(cent,lims);
+           nd{z}(n) = NucDensity(cent,lims,1);
 
         catch ME
             disp(ME.message); 
@@ -96,109 +97,113 @@ end
 
 
 
-%%
- % clear all; load snail_shadow_data;
 
 ND = cell2mat(nd); 
-figure(1); clf;
-plot( log2(sort(ND(:))) ,'r.');
+age_offset = 4.8;
+
+emb_cycle = age_offset + log2( nonzeros( sort(ND(:)) ) );
+figure(2); clf; plot( emb_cycle ,'r.');
+
+
+title(['hb embryos, N = ',num2str(length(nonzeros(ND(:))) )  ],'FontSize',15);
+set(gca,'FontSize',15); grid on;
+set(gcf,'color','w'); ylabel('log_2(nuc density)');  xlabel('embryo number'); 
+ylim([10,14.99]);
+
+
 %%
-cc14 =cell(1,G); cc13 = cell(1,G); cc12 = cell(1,G); 
+G= length(names);
+cc14 =cell(1,G); cc13 = cell(1,G); cc12 = cell(1,G); cc11 = cell(1,G); cc10 = cell(1,G); cc9 = cell(1,G); 
 for z=1:G
-    cc14{z} = log2(ND(:,z))>9;
-    cc13{z} = log2(ND(:,z))<9  & log2(ND(:,z))>8;
-    cc12{z} = log2(ND(:,z))<8;
+    logage =   age_offset + log2( ND(:,z) );
+    
+    cc14{z} = logage >14;
+    cc13{z} = logage <14  & logage> 13;
+    cc12{z}  = logage <13 & logage > 12;
+    cc11{z} = logage <12 ;
 end
 
-
 %% Plot Fraction of missing nuclei distributions
 
 xlab = 'fraction of missed nuclei';
-
+F = 12; % FontSize; 
+ymax = .02; pts = 1000;
 
 plot_miss = cell(1,G); 
-% for k=1:G;     plot_miss{k} = miss_rate{k}(cc13{k}); end
-for k=1:G;     plot_miss{k} = miss_rate{k}; end
+ for k=1:G;     plot_miss{k} = miss_rate{k}(cc14{k}); end
 
 
- figure(2); clf;
-% colordef black; set(gcf,'color','k');
+figure(33); clf;  subplot(3,1,1);
 colordef white; set(gcf,'color','w');
 
-x = linspace(0,1,25);  % range and number of bins for histogram
-xx = linspace(0,1,100); % range a number of bins for interpolated distribution
+x = linspace(0,1,8);  % range and number of bins for histogram
+xx = linspace(0,1,pts); % range a number of bins for interpolated distribution
+ method = 'pcubic'; % method for interpolation
+sigma = .05;  % smoothing factor for interpolation
+CompDist(plot_miss,x,xx,method,sigma,names,xlab,F)
+ylim([0,.5*ymax]); title('Early cc14');
+
+
+%~~~~ Plot Fraction of missing nuclei distributions  ~~~~
+
+plot_miss = cell(1,G); 
+ for k=1:G;     plot_miss{k} = miss_rate{k}(cc13{k}); end
+
+figure(33); subplot(3,1,2);
+colordef white; set(gcf,'color','w');
+
+x = linspace(0,1,15);  % range and number of bins for histogram
+xx = linspace(0,1,pts); % range a number of bins for interpolated distribution
  method = 'pcubic'; % method for interpolation
 sigma = .1;  % smoothing factor for interpolation
-CompDist(plot_miss,x,xx,method,sigma,names,xlab)
+CompDist(plot_miss,x,xx,method,sigma,names,xlab,F)
+ylim([0,ymax]); title('cc13');
 
 
 
-%% Plot Fraction of missing nuclei distributions
+%~~~~ Plot Fraction of missing nuclei distributions ~~~~~
 
-xlab = 'fraction of missed nuclei';
+plot_miss = cell(1,G); 
+ for k=1:G;     plot_miss{k} = miss_rate{k}(cc12{k}|cc11{k} ); end
+
+
+ figure(33); subplot(3,1,3);
+colordef white; set(gcf,'color','w');
+
+x = linspace(0,1,15);  % range and number of bins for histogram
+xx = linspace(0,1,pts); % range a number of bins for interpolated distribution
+ method = 'pcubic'; % method for interpolation
+sigma = .15;  % smoothing factor for interpolation
+CompDist(plot_miss,x,xx,method,sigma,names,xlab,F)
+ylim([0,.5*ymax]);  title('cc11 & 12');
+
+
+%%
+
+
+
+
+%% Total Expression Variability
+
+%%
+xlab = '\sigma/\mu';
 
 
 plot_miss = cell(1,G); 
-for k=1:G;     plot_miss{k} = miss_rate{k}(cc14{k}); end
+ for k=1:G;     plot_miss{k} = lowon{k}(cc13{k}); end
+% for k=1:G;     plot_miss{k} = miss_rate{k}; end
+
 
  figure(1); clf;
 % colordef black; set(gcf,'color','k');
 colordef white; set(gcf,'color','w');
 
-% x = linspace(0,1,8);  % range and number of bins for histogram
-% xx = linspace(0,1,100); % range a number of bins for interpolated distribution
-%  method = 'pcubic'; % method for interpolation
-% sigma = .1;  % smoothing factor for interpolation
-% CompDist(plot_miss,x,xx,method,sigma,names,xlab)
+x = linspace(0,1,14);  % range and number of bins for histogram
+xx = linspace(0,1,1000); % range a number of bins for interpolated distribution
+ method = 'pcubic'; % method for interpolation
+sigma = .1;  % smoothing factor for interpolation
+y = CompDist(plot_miss,x,xx,method,sigma,names,xlab,14);
 
-BoxDist(plot_miss,names,xlab);
-set(gcf,'color','k');
+title('cc13 embryos');
 
-V= plot_miss;
-    P_var = zeros(G,G); 
-    for i=1:G
-        for j=1:G   
-   P_var(i,j) =  log10(ranksum(V{i},V{j}));
-        end
-    end
-    
-    figure(6); clf; imagesc(P_var); colorbar;  colormap('gray');
-    set(gca,'YtickLabel', str2mat(names{:}),'YTick',1:6,'fontsize',15,...
-    'YMinorTick','on'); title(xlab);
-    set(gcf,'color','k');
 
-% %% Plot Total mRNA variability distribuitons 
-% 
-% xlab = 'variability in total transcript (\sigma/\mu)';
-% 
-% 
-% plot_lowon = cell(1,G); 
-% for k=1:G; plot_lowon{k} = lowon{k}(cc14{k}); end
-% figure(2); clf;
-%  colordef black; set(gcf,'color','k');
-% %colordef white; set(gcf,'color','w');
-% 
-% 
-% %  x = linspace(0,1,20);
-% %   xx = linspace(0,1,100); 
-% %  method = 'pcubic';
-% % sigma = .1; 
-% % CompDist(plot_lowon,x,xx,method,sigma,names,xlab)
-% 
-% BoxDist(plot_lowon,names,xlab);
-% set(gcf,'color','k');
-% 
-% V= plot_lowon;
-%     P_var = zeros(G,G); 
-%     for i=1:G
-%         for j=1:G   
-%    P_var(i,j) =  log10(ranksum(V{i},V{j}));
-%         end
-%     end
-%     
-%     figure(6); clf; imagesc(P_var); colorbar;  colormap('gray');
-%     set(gca,'YtickLabel', str2mat(names{:}),'YTick',1:6,'fontsize',15,...
-%     'YMinorTick','on'); title(xlab);
-%     set(gcf,'color','k');
-% 
-% %

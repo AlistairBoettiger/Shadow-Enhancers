@@ -44,6 +44,7 @@ miss_cnt = cell(1,K);
 miss_rate = cell(1,K); 
 nd = cell(1,K); 
 lowon = cell(1,K); 
+cell_var = cell(1,K); 
 ectop_cnt = cell(1,K);
 ectop_rate = cell(1,K);
 
@@ -79,9 +80,9 @@ for z=1:K % k=2;
            miss_rate{z}(n) = miss_cnt{z}(n)/length(pts2); 
         
            ectop_cnt{z}(n) = length(intersect(setdiff(pts1,pts2),setdiff(ptr_nucin1,ptr_nucin2)')); 
-           lowon{z}(n) = lowon_fxn(H,handles,nin2,ptr_nucin2,emb); 
+        %   [lowon{z}(n), cell_var{z}(n)] =   lowon_fxn(H,handles,nin2,ptr_nucin2,[emb_roots{z},emb],1); 
           
-          
+            [lowon{z}(n)] = lowon_fxn(H,handles,nin2,ptr_nucin2,[emb_roots{z},emb],0);  
            if length(H) > 2000
                im_dim = 2048;
            else
@@ -103,6 +104,7 @@ end
 close all; 
 
 
+% save kni_LacZ_data_2;
  %save kni_LacZ_data;
 %  save kni_LacZ_data_ect; % also record ectopic expression rate.  
 
@@ -114,12 +116,15 @@ close all;
 
 
 %%
-clear all; load  kni_LacZ_data_ect;
+% clear all; load  kni_LacZ_data_ect;
  %clear all; load  kni_LacZ_data;
 
+clear all; load kni_LacZ_data_2;
+ 
 ND = cell2mat(nd); 
 
-emb_cycle = 4.8 + log2( nonzeros( sort(ND(:)) ) );
+
+emb_cycle = 4.9 + log2( nonzeros( sort(ND(:)) ) );
 figure(10); clf; plot( emb_cycle ,'r.');
 
 T_embs = length(nonzeros(ND(:))) ;
@@ -132,7 +137,7 @@ ylim([10,14.99]); xlim([0,T_embs + 10]);
 %%
 cc14 =cell(1,G); cc13 = cell(1,G); cc12 = cell(1,G); cc11 = cell(1,G); cc10 = cell(1,G); cc9 = cell(1,G); 
 for z=1:G
-    logage =   4.7 + log2( ND(:,z) );
+    logage =   4.9 + log2( ND(:,z) );
     
     cc14{z} = logage >14;
     cc13{z} = logage <14  & logage> 13;
@@ -244,3 +249,27 @@ y = CompDist(plot_miss,x,xx,method,sigma,names,xlab,14);
 title('cc13 embryos');
 
 xlab = 'fraction of ectopic on nuclei';
+
+
+%% Total Expression Variability
+
+%%
+xlab = '\sigma/\mu';
+
+
+plot_miss = cell(1,G); 
+ for k=1:G;     plot_miss{k} = lowon{k}(cc13{k}); end
+% for k=1:G;     plot_miss{k} = miss_rate{k}; end
+
+
+ figure(1); clf;
+% colordef black; set(gcf,'color','k');
+colordef white; set(gcf,'color','w');
+
+x = linspace(0,1,14);  % range and number of bins for histogram
+xx = linspace(0,1,1000); % range a number of bins for interpolated distribution
+ method = 'pcubic'; % method for interpolation
+sigma = .1;  % smoothing factor for interpolation
+y = CompDist(plot_miss,x,xx,method,sigma,names,xlab,14);
+
+title('cc13 embryos');

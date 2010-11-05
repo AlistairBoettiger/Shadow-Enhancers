@@ -1,11 +1,11 @@
-%%                          Plot_DotComps.m                             %%
+%%                          Plot_DotComps2_hb.m                             %%
 %
 % Analyzing New Shadow data
 %
 %
 % Alistair Boettiger                                   Date Begun: 03/05/10
 % Levine Lab                                     Functional Since: 03/06/10
-%                                                   Last Modified: 10/10/10
+%                                                   Last Modified: 11/02/10
 
 %% Description
 % comparison
@@ -13,6 +13,8 @@
 %
 %% Updates
 % Modified 10/18/10 to incldue repression of ectopic expression. 
+% Modified to hack failed combine data code
+
 
 %% Source Code
 clear all;
@@ -149,7 +151,7 @@ close all;
 
 
 %%
- % clear all; load hb_SD-9-13-10
+ % clear all; load  hb_SD-10-21-10
 
 ND = cell2mat(nd); 
 age_offset = 4.8;
@@ -314,7 +316,7 @@ plot_miss{6} = [];plot_miss{9} = [];plot_miss{4} = [];
  figure(34); subplot(3,1,3);
 colordef white; set(gcf,'color','w');
 
-x = linspace(0,1,15);  % range and number of bins for histogram
+x = linspace(0,1,55);  % range and number of bins for histogram
 xx = linspace(0,1,pts); % range a number of bins for interpolated distribution
  method = 'pcubic'; % method for interpolation
 sigma = .15;  % smoothing factor for interpolation
@@ -323,7 +325,7 @@ ylim([0,.5*ymax]);  title('cc11 & 12');
 
 
 
-
+mean(plot_miss{1})
 
 
 
@@ -378,7 +380,7 @@ plot_miss = cell(1,G);
 % colordef black; set(gcf,'color','k');
 colordef white; set(gcf,'color','w');
 
-x = linspace(0,1,15);  % range and number of bins for histogram
+x = linspace(0,1,25);  % range and number of bins for histogram
 xx = linspace(0,1,pts); % range a number of bins for interpolated distribution
  method = 'pcubic'; % method for interpolation
 sigma = .1;  % smoothing factor for interpolation
