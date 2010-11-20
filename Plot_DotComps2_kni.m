@@ -210,7 +210,7 @@ title('cc11 and 12 embryos');
 
 
 %%  Ectopic expression rate
-
+xlab = 'fraction of ectopic on nuclei';
 plot_miss = cell(1,G); 
  for k=1:G;     plot_miss{k} = ectop_rate{k}(cc14{k}); end
 % for k=1:G;     plot_miss{k} = miss_rate{k}; end
@@ -220,7 +220,7 @@ plot_miss = cell(1,G);
 % colordef black; set(gcf,'color','k');
 colordef white; set(gcf,'color','w');
 
-x = linspace(0,1,14);  % range and number of bins for histogram
+x = linspace(0,1,18);  % range and number of bins for histogram
 xx = linspace(0,1,100); % range a number of bins for interpolated distribution
  method = 'pcubic'; % method for interpolation
 sigma = .1;  % smoothing factor for interpolation
@@ -228,7 +228,7 @@ y = CompDist(plot_miss,x,xx,method,sigma,names,xlab,14);
 
 title('cc14 embryos');
 
-xlab = 'fraction of ectopic on nuclei';
+
 
 
 plot_miss = cell(1,G); 
