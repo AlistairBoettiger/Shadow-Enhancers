@@ -16,7 +16,7 @@
 
 
 
-function [f1,f2,f3] = divide_regs(L2,H,pts1,pts2,ptr_nucin2,In)
+function [f1,f2,f3] = divide_regs(L2,H,pts1,pts2,ptr_nucin2,In,dispim)
 %%
 % Get major region
     % Compute region sizes
@@ -94,6 +94,7 @@ Ntot = max(H(:));
 %     subplot(3,1,2); imshow(Igreen);
 %     subplot(3,1,3); imshow(Idif);
  
+if dispim == 1
     figure(1); clf; % In = handles.In;
      imReg1 = ismember(H,onReg1);
      imReg2 = ismember(H,onReg2);
@@ -101,7 +102,8 @@ Ntot = max(H(:));
     imReg = double(In)/255+(imReg1 + 2*imReg2 + 3*imReg3);
     imagesc(imReg); colormap(jet);
     pause(.1);
-    
+end 
+
 % compute fraction of INactive cells in region
 f1 = length(onReg1)/length(s1s); % anterior most region
 f2 = length(onReg2)/length(s2s); % middle region

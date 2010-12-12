@@ -5,7 +5,7 @@
 %
 % Alistair Boettiger                                   Date Begun: 03/05/10
 % Levine Lab                                     Functional Since: 03/06/10
-%                                                   Last Modified: 11/02/10
+%                                                   Last Modified: 12/09/10
 
 %% Description
 % comparison
@@ -14,6 +14,7 @@
 %% Updates
 % Modified 10/18/10 to incldue repression of ectopic expression. 
 % Modified to hack failed combine data code
+% Modified 12/09/10 to add new datasets
 
 
 %% Source Code
@@ -31,47 +32,34 @@ emb_roots = {'MP09_22C_y_hb'; % 1
             'BAC09_22C_y_hb'; % 6 
             'BAC09_30C_y_hb';% 7 
             'BAC01_30C_y_hb';% 8
-            'BAC02_22C_y_hb' 
+            'BAC02_22C_y_hb'; % 9
+            'BAC01b_22C_y_hb';
+            'BAC01b_30C_y_hb';
+            'BAC02b_30C_y_hb';
             };  
           %1 +6, 2+9, 3+4, 
-
-        names = {'2 enhancers, 22C';
-         'no shadow, 22C';
-         'no shadow, 30C';
-         'no primary, 22C';
-         '2 enhancer 30C';
-         'no primary,30C';
-         };
      
 
-     % all names
-names = {'2 enhancers, 22C';
-         'no shadow, 22C';
-         'no shadow, 30C';
-         'no shadow b, 30C'; 
-         'no primary, 22C';
-         '2 enh 22C';
-         '2 enh 30C';
-         'no primary 30C';
-         'no shadow b, 22C'
-         };
+%      % all names
+% names = {'2 enhancers, 22C';
+%          'no shadow, 22C';
+%          'no shadow, 30C';
+%          'no shadow, 30C, b'; 
+%          'no primary, 22C';
+%          '2 enh 22C';
+%          '2 enh 30C';
+%          'no primary 30C';
+%          'no shadow, 22C, b';
+%          'no primary 22C, b';
+%          'no primary 30C, b';
+%          'no shadow 30C, c'
+%          };
 
      
-names = {'2 enhancers, 22C';
-         'no shadow, 22C';
-         'no shadow, 30C';
-         'no shadow b, 30C'; 
-         'no primary, 22C';
-         '2 enh 30C';
-         'no primary 30C';
-         'no shadow b, 22C'
-         };
-
-
 
 N = 100;
 K = length(emb_roots); 
-G= length(names);
+% G= length(names);
 
 
      age_table = cell(1,K);
@@ -109,9 +97,9 @@ for z=1:K % k=2;
         % require these nuclei also fall in the 'region' for red nuclei.  
        % s29_miss_cnt(n) =  length(intersect(setdiff(pts2,pts1), ptr_nucin2));
           % miss_cnt{z}(n) =  length(intersect(setdiff(pts2,pts1), ptr_nucin2));  
-             [miss_cnt{z}(n), ptr_nucin2] = anlz_major_reg(folder,emb_roots{z},emb );
-           miss_rate{z}(n) = miss_cnt{z}(n)/length(pts2); 
-           lowon{z}(n) = lowon_fxn(H,handles,nin2,ptr_nucin2,emb); 
+             [miss_rate{z}(n), ptr_nucin2] = anlz_major_reg2(folder,emb_roots{z},emb );
+           % miss_rate{z}(n) = miss_cnt{z}(n)/length(pts2); 
+           % lowon{z}(n) = lowon_fxn(H,handles,nin2,ptr_nucin2,emb); 
           
            
            ectop_cnt{z}(n) = length(intersect(setdiff(pts1,pts2),setdiff(ptr_nucin1,ptr_nucin2)')); 
@@ -135,6 +123,7 @@ end
 
 close all; 
 
+save hb_SD-12-09-10
 % save hb_SD-10-21-10;% includes ectopic repression analysis
 % save hb_SD-10-18-10;% includes ectopic repression analysis
 % save hb_SD-10-13-10;
@@ -151,9 +140,64 @@ close all;
 
 
 %%
- % clear all; load  hb_SD-10-21-10
+  clear all; load hb_SD-12-09-10
 
-ND = cell2mat(nd); 
+ % Merge data
+ 
+%  %
+%       % all names
+% names = {'2 enhancers, 22C';  % 1
+%          'no shadow, 22C';    % 2
+%          'no shadow, 30C';    % 3
+%          'no shadow, 30C, b'; % 4
+%          'no primary, 22C';   % 5
+%          '2 enh 22C';         % 6
+%          '2 enh 30C';         % 7
+%          'no primary 30C';    % 8
+%          'no shadow, 22C, b'; % 9
+%          'no primary 22C, b'; % 10 
+%          'no primary 30C, b'; % 11
+%          'no shadow 30C, c'   % 12
+%          };
+
+
+ Nnuc = cell(1,6); foff = cell(1,6);  
+
+ foff{1} = [miss_rate{1}; miss_rate{6}] ;  Nnuc{1} = [nd{1}; nd{6}] ;  % 2 enhancer 22C
+ 
+ foff{2} = miss_rate{7};  Nnuc{2} = nd{7}; % 2 enhancer 30C
+ 
+ foff{3} = [miss_rate{2}; miss_rate{9}];  Nnuc{3} = [nd{2}; nd{9}]; % no shadow 22C
+  
+ foff{4} = [miss_rate{3}; miss_rate{4}; miss_rate{12}];  Nnuc{4} = [nd{3}; nd{4}; nd{12}]; % no shadow 30C
+ 
+ foff{5} = [miss_rate{5}; miss_rate{10}];  Nnuc{5} = [nd{5}; nd{10}]; % no primary 22C
+
+ foff{6} = [miss_rate{8}; miss_rate{11}];  Nnuc{6} = [nd{8}; nd{11}]; % no primary 30C
+ 
+ G = length(foff);
+ 
+ for k=1:G
+    data = nonzeros(foff{k});
+    foff{k} = [data; zeros(200-length(data),1)];
+    data = nonzeros(Nnuc{k});
+    Nnuc{k} = [data; zeros(200-length(data),1)];
+ end
+     
+ names = {'control 22C';
+          'control 30C';
+          'no shadow 22C';
+          'no shadow 30C';
+          'no primary 22C';
+          'no primary 30C'
+          };
+      
+ 
+ %%
+ 
+ 
+%ND = cell2mat(nd); 
+ND = cell2mat(Nnuc); 
 age_offset = 4.8;
 
 emb_cycle = age_offset + log2( nonzeros( sort(ND(:)) ) );
@@ -175,7 +219,8 @@ for z=1:G
     cc14{z} = logage >14;
     cc13{z} = logage <14  & logage> 13;
     cc12{z}  = logage <13 & logage > 12;
-    cc11{z} = logage <12 ;
+    cc11{z} = logage <12 & logage > 0 ;
+    foff{z}(foff{z}==Inf) = 0; 
 end
 
 %% Plot Fraction of missing nuclei distributions
@@ -183,152 +228,72 @@ end
 xlab = 'fraction of missed nuclei';
 F = 12; % FontSize; 
 ymax = .02; pts = 1000;
+xmax = 1;
 
 plot_miss = cell(1,G); 
- for k=1:G;     plot_miss{k} = miss_rate{k}(cc14{k}); end
+ for k=1:G;     plot_miss{k} = foff{k}(cc14{k}); end
 
 
 figure(33); clf;  subplot(3,1,1);
 colordef white; set(gcf,'color','w');
 
-x = linspace(0,1,10);  % range and number of bins for histogram
-xx = linspace(0,1,pts); % range a number of bins for interpolated distribution
- method = 'pcubic'; % method for interpolation
-sigma = .05;  % smoothing factor for interpolation
-CompDist(plot_miss,x,xx,method,sigma,names,xlab,F)
-ylim([0,.5*ymax]); title('Early cc14');
-
-
-%~~~~ Plot Fraction of missing nuclei distributions  ~~~~
-
-plot_miss = cell(1,G); 
- for k=1:G;     plot_miss{k} = miss_rate{k}(cc13{k}); end
-
-figure(33); subplot(3,1,2);
-colordef white; set(gcf,'color','w');
-
-x = linspace(0,1,20);  % range and number of bins for histogram
-xx = linspace(0,1,pts); % range a number of bins for interpolated distribution
- method = 'pcubic'; % method for interpolation
-sigma = .1;  % smoothing factor for interpolation
-CompDist(plot_miss,x,xx,method,sigma,names,xlab,F)
-ylim([0,ymax]); title('cc13');
-
-
-
-%~~~~ Plot Fraction of missing nuclei distributions ~~~~~
-
-plot_miss = cell(1,G); 
- for k=1:G;     plot_miss{k} = miss_rate{k}(cc12{k}|cc11{k} ); end
-
-
- figure(33); subplot(3,1,3);
-colordef white; set(gcf,'color','w');
-
 x = linspace(0,1,15);  % range and number of bins for histogram
 xx = linspace(0,1,pts); % range a number of bins for interpolated distribution
  method = 'pcubic'; % method for interpolation
-sigma = .15;  % smoothing factor for interpolation
-CompDist(plot_miss,x,xx,method,sigma,names,xlab,F)
-ylim([0,.5*ymax]);  title('cc11 & 12');
-
-
-%%
-
-
-
-
-
-
-
-
-%% Plot Fraction of missing nuclei distributions and combine duplicates
-
-% Hack 
-G = 9;
-     % all names
-names = {'2 enhancers, 22C';
-         'no shadow, 22C';
-         'no shadow, 30C';
-         'no shadow B only, 30C'; 
-         'no primary, 22C';
-         '2 enh B only 22C';
-         '2 enh 30C';
-         'no primary 30C';
-         'no shadow B only, 22C'
-         };
-     
-
-
-
-xlab = 'fraction of missed nuclei';
-F = 12; % FontSize; 
-ymax = .02; pts = 1000;
-
-plot_miss = cell(1,G); 
- for k=1:G;     plot_miss{k} = miss_rate{k}(cc14{k}); end
-plot_miss{1} = [plot_miss{1}; plot_miss{6}];  
-plot_miss{2} = [plot_miss{2}; plot_miss{9}]; 
-plot_miss{3} = [plot_miss{3}; plot_miss{4}]; 
-plot_miss{6} = [];plot_miss{9} = [];plot_miss{4} = [];
-
-figure(34); clf;  subplot(3,1,1);
-colordef white; set(gcf,'color','w');
-
-x = linspace(0,1,10);  % range and number of bins for histogram
-xx = linspace(0,1,pts); % range a number of bins for interpolated distribution
- method = 'pcubic'; % method for interpolation
-sigma = .05;  % smoothing factor for interpolation
+sigma = .01;  % smoothing factor for interpolation
 CompDist(plot_miss,x,xx,method,sigma,names,xlab,F)
 ylim([0,.5*ymax]); title('Early cc14');
+xlim([0,xmax]);
+
+figure(30); clf;  subplot(3,1,1); 
+BoxDist(plot_miss,names,'fraction missed');
+xlim([0,1]);
 
 
 %~~~~ Plot Fraction of missing nuclei distributions  ~~~~
 
 plot_miss = cell(1,G); 
- for k=1:G;     plot_miss{k} = miss_rate{k}(cc13{k}); end
-plot_miss{1} = [plot_miss{1}; plot_miss{6}];  
-plot_miss{2} = [plot_miss{2}; plot_miss{9}]; 
-plot_miss{3} = [plot_miss{3}; plot_miss{4}]; 
-plot_miss{6} = [];plot_miss{9} = [];plot_miss{4} = [];
- 
-figure(34); subplot(3,1,2);
+ for k=1:G;     plot_miss{k} = foff{k}(cc13{k}); end
+
+figure(33); subplot(3,1,2);
 colordef white; set(gcf,'color','w');
 
 x = linspace(0,1,40);  % range and number of bins for histogram
 xx = linspace(0,1,pts); % range a number of bins for interpolated distribution
  method = 'pcubic'; % method for interpolation
-sigma = .1;  % smoothing factor for interpolation
+sigma = .05;  % smoothing factor for interpolation
 CompDist(plot_miss,x,xx,method,sigma,names,xlab,F)
 ylim([0,ymax]); title('cc13');
+xlim([0,xmax]);
 
 
+figure(30); subplot(3,1,2); 
+BoxDist(plot_miss,names,'fraction missed');
+xlim([0,1]);
 
 %~~~~ Plot Fraction of missing nuclei distributions ~~~~~
 
-plot_miss = cell(1,G); 
- for k=1:G;     plot_miss{k} = miss_rate{k}(cc12{k}|cc11{k} ); end
-plot_miss{1} = [plot_miss{1}; plot_miss{6}];  
-plot_miss{2} = [plot_miss{2}; plot_miss{9}]; 
-plot_miss{3} = [plot_miss{3}; plot_miss{4}]; 
-plot_miss{6} = [];plot_miss{9} = [];plot_miss{4} = [];
+plot_miss = cell(1,G); % k = 10;
+ for k=1:G;     plot_miss{k} = foff{k}(cc12{k}|cc11{k} ); end
 
- figure(34); subplot(3,1,3);
+
+ figure(33); subplot(3,1,3); % figure(2); clf; 
 colordef white; set(gcf,'color','w');
 
-x = linspace(0,1,55);  % range and number of bins for histogram
+x = linspace(0,1,12);  % range and number of bins for histogram
 xx = linspace(0,1,pts); % range a number of bins for interpolated distribution
  method = 'pcubic'; % method for interpolation
-sigma = .15;  % smoothing factor for interpolation
+sigma = .05;  % smoothing factor for interpolation
 CompDist(plot_miss,x,xx,method,sigma,names,xlab,F)
 ylim([0,.5*ymax]);  title('cc11 & 12');
+xlim([0,xmax]);
+
+%
 
 
-
-mean(plot_miss{1})
-
-
-
+figure(30); subplot(3,1,3); 
+BoxDist(plot_miss,names,'fraction missed');
+xlim([0,1]);
 
 
 
@@ -347,7 +312,7 @@ x = linspace(0,1,14);  % range and number of bins for histogram
 xx = linspace(0,1,pts); % range a number of bins for interpolated distribution
  method = 'pcubic'; % method for interpolation
 sigma = .1;  % smoothing factor for interpolation
-y = CompDist(plot_miss,x,xx,method,sigma,names,xlab,14);
+CompDist(plot_miss,x,xx,method,sigma,names,xlab,14);
 
 title('cc14 embryos');
 
@@ -384,7 +349,7 @@ x = linspace(0,1,25);  % range and number of bins for histogram
 xx = linspace(0,1,pts); % range a number of bins for interpolated distribution
  method = 'pcubic'; % method for interpolation
 sigma = .1;  % smoothing factor for interpolation
-y = CompDist(plot_miss,x,xx,method,sigma,names,xlab,14);
+CompDist(plot_miss,x,xx,method,sigma,names,xlab,14);
 
 title('cc12 and 11 embryos');
 
@@ -393,157 +358,3 @@ xlab = 'fraction of ectopic on nuclei';
 
 
 
-
-
-
-% 
-% 
-% 
-% %% 
-% 
-% % disp all embryos 
-% 
-% for z = 1:K
-%     for n=1:N
-%         xmin = .2; xmax = .8; ymin = .1; ymax = .75;
-%             if length(H) > 1500
-%                im_dim = 2048;
-%            else
-%                im_dim = 1024;
-%            end
-%         
-%          lims =  round([xmin,xmax,ymin,ymax/2]*im_dim); 
-%      
-% 
-%         
-%       %  logage = log2(age_table{z}{n,2});
-%         if cc9{z}(n) ==1;  % logage < 8
-%             try
-%             load(age_table{z}{n,1});
-%            figure(3);  clf; imshow(handles.It);   pause(2);    
-%         
-%            figure(4); clf; 
-%             set(gcf,'color','k'); 
-%  subplot(2,1,1); 
-%      Io = uint8(zeros(h,w,3));
-%      Io(:,:,1) = uint8(255*L1);
-%      Io(:,:,3) = 30*handles.In;
-%      Ired = uint8(bsxfun(@times,double(Io)/255,double(handles.In)));
-%      imshow(Ired); hold on;
-%       %plot(rna_x1,rna_y1,'r.');  
-%  subplot(2,1,2); 
-%      Io = uint8(zeros(h,w,3));
-%      Io(:,:,2) = uint8(255*L2);
-%      Io(:,:,3) = 30*handles.In;
-%      Igreen = uint8(bsxfun(@times,double(Io)/255,double(handles.In)));
-%      imshow(Igreen); hold on;
-%            
-%            
-%             catch 
-%             end
-%              % title([emb_roots{z}, '   cell cycle ', num2str( round(logage + 3 ))],'FontSize',12);
-%           
-%           %  nd{z}(n) = NucDensity(cent,lims,1);
-%            %  age_table{z}{n,2} = nd{z}(n);  
-%          %   pause(.02); 
-%     
-%         end
-%     end
-% end
-% 
-% 
-% 
-% 
-% 
-% 
-% 
-% 
-% 
-% %%
-% xlab = 'fraction of missed nuclei';
-% 
-% 
-% plot_miss = cell(1,G); 
-%  for k=1:G;     plot_miss{k} = miss_rate{k}(cc11{k}|cc12{k}); end
-% %for k=1:G;     plot_miss{k} = miss_rate{k}; end
-% 
-% 
-%  figure(1); clf;
-% % colordef black; set(gcf,'color','k');
-% colordef white; set(gcf,'color','w');
-% 
-% x = linspace(0,1,25);  % range and number of bins for histogram
-% xx = linspace(0,1,100); % range a number of bins for interpolated distribution
-%  method = 'pcubic'; % method for interpolation
-% sigma = .1;  % smoothing factor for interpolation
-% CompDist(plot_miss,x,xx,method,sigma,names,xlab)
-% 
-% %% Plot Fraction of missing nuclei distributions
-% 
-% xlab = 'fraction of missed nuclei';
-% 
-% 
-% plot_miss = cell(1,G); 
-% for k=1:G;     plot_miss{k} = miss_rate{k}(cc11{k}); end
-% 
-%  figure(1); clf;
-% % colordef black; set(gcf,'color','k');
-% colordef white; set(gcf,'color','w');
-% 
-% % x = linspace(0,1,8);  % range and number of bins for histogram
-% % xx = linspace(0,1,100); % range a number of bins for interpolated distribution
-% %  method = 'pcubic'; % method for interpolation
-% % sigma = .1;  % smoothing factor for interpolation
-% % CompDist(plot_miss,x,xx,method,sigma,names,xlab)
-% 
-% BoxDist(plot_miss,names,xlab);
-% set(gcf,'color','k');
-% 
-% V= plot_miss;
-%     P_var = zeros(G,G); 
-%     for i=1:G
-%         for j=1:G   
-%    P_var(i,j) =  log10(ranksum(V{i},V{j}));
-%         end
-%     end
-%     
-%     figure(6); clf; imagesc(P_var); colorbar;  colormap('gray');
-%     set(gca,'YtickLabel', str2mat(names{:}),'YTick',1:6,'fontsize',15,...
-%     'YMinorTick','on'); title(xlab);
-%     set(gcf,'color','k');
-% 
-% % %% Plot Total mRNA variability distribuitons 
-% % 
-% % xlab = 'variability in total transcript (\sigma/\mu)';
-% % 
-% % 
-% % plot_lowon = cell(1,G); 
-% % for k=1:G; plot_lowon{k} = lowon{k}(cc14{k}); end
-% % figure(2); clf;
-% %  colordef black; set(gcf,'color','k');
-% % %colordef white; set(gcf,'color','w');
-% % 
-% % 
-% % %  x = linspace(0,1,20);
-% % %   xx = linspace(0,1,100); 
-% % %  method = 'pcubic';
-% % % sigma = .1; 
-% % % CompDist(plot_lowon,x,xx,method,sigma,names,xlab)
-% % 
-% % BoxDist(plot_lowon,names,xlab);
-% % set(gcf,'color','k');
-% % 
-% % V= plot_lowon;
-% %     P_var = zeros(G,G); 
-% %     for i=1:G
-% %         for j=1:G   
-% %    P_var(i,j) =  log10(ranksum(V{i},V{j}));
-% %         end
-% %     end
-% %     
-% %     figure(6); clf; imagesc(P_var); colorbar;  colormap('gray');
-% %     set(gca,'YtickLabel', str2mat(names{:}),'YTick',1:6,'fontsize',15,...
-% %     'YMinorTick','on'); title(xlab);
-% %     set(gcf,'color','k');
-% % 
-% % %

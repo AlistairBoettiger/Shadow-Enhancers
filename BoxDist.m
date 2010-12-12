@@ -35,7 +35,7 @@ B = zeros(100,G);
 for k=1:G
  B(1:length(data{k}),k) = data{k};
 end
-Ns = sum(logical(B));
+Ns = sum(B>0);
 B(B==0) = NaN; 
 
 legend_labels = cell(1,G); 
@@ -43,14 +43,17 @@ for k=1:G
     legend_labels{k} = [names{k}, ' N=', num2str(Ns(k) )]; 
 end
 
+B = fliplr(B);
+legend_labels = fliplr(legend_labels); 
 
 boxplot(B,'orientation','horizontal','whisker',1,'colorgroup',C,'colors',C1,'labels',legend_labels); % ,'medianstyle','target'
 hold on;
 plot(-1,-1,'color',C1(1,:)); 
 plot(-1,-1,'color',C1(2,:));
-legend('29C','22C','Location','Best'); 
+legend('30C','22C'); 
 set(gca,'FontSize',15);
 xlabel(xlab,'FontSize', 16);
+
 
 %legend(legend_labels,'Location','SouthOutside'); 
 % set(gca,'XTick',[],'XTickLabel',{' '},'FontSize',15);
