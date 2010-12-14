@@ -109,3 +109,5 @@ f1 = length(onReg1)/length(s1s); % anterior most region
 f2 = length(onReg2)/length(s2s); % middle region
 f3 = length(onReg3)/length(s3s); % boundary
 
+save test2;
+

@@ -1,0 +1,191 @@
+%%                                  model_hb_bcd.m
+% 
+% 
+% Alistair Boettiger                                   Date Begun: 12/11/10
+% Levine Lab                                   Version Functional: 12/11/10
+%                                                   Last Modified: 12/12/10 
+%
+%% Code Description:
+% Model hb expression to match binding site data without cooperativity.  
+% adapted from model_hb.m to account for bicoid binding sites explicitly 
+
+
+%  Essent
+%
+
+function model_hb_bcd
+clear all;
+
+N  = 20;  T = 50;
+x = linspace(0,1,N);
+
+tau = 1/5; % from Gregor 2007
+bcd = exp(-x/tau);
+
+% figure(1); clf; plot(x,bcd,'g');
+
+
+hbM = .1;
+
+
+
+hb = hbM*ones(N,1); 
+P = ones(N,1); 
+PB1 = zeros(N,1);
+PB2 = zeros(N,1);
+PB3 = zeros(N,1);
+PB4 = zeros(N,1);
+PB5 = zeros(N,1); 
+PB1H = zeros(N,1);
+PB2H = zeros(N,1);
+PB3H = zeros(N,1);
+PB4H = zeros(N,1);
+PB5H = zeros(N,1); 
+PB1H2 = zeros(N,1);
+PB2H2 = zeros(N,1);
+PB3H2 = zeros(N,1);
+PB4H2 = zeros(N,1);
+PB5H2 = zeros(N,1);  
+
+R0 = [hb;P;PB1;PB2;PB3;PB4;PB5;PB1H;PB2H;PB3H;PB4H;PB5H;PB1H2;PB2H2;PB3H2;PB4H2;PB5H2];
+[t,R] = ode15s(@sys,[0,T],R0,[],[N,bcd]);
+hb = R(:,1:N); 
+
+
+P = R(:,N+1:2*N);  % 
+PB1 = R(:,2*N+1:3*N);  % 
+PB2 = R(:,3*N+1:4*N);  % 
+PB3 = R(:,4*N+1:5*N); 
+PB4 = R(:,5*N+1:6*N); 
+PB5 = R(:,6*N+1:7*N); 
+PB1H = R(:,7*N+1:8*N); 
+PB2H = R(:,8*N+1:9*N); 
+PB3H = R(:,9*N+1:10*N); 
+PB4H = R(:,10*N+1:11*N); 
+PB5H = R(:,11*N+1:12*N); 
+PB1H2 = R(:,12*N+1:13*N); 
+PB2H2 = R(:,13*N+1:14*N); 
+PB3H2 = R(:,14*N+1:15*N); 
+PB4H2 = R(:,15*N+1:16*N); 
+PB5H2 = R(:,16*N+1:17*N);
+
+PB = zeros(size(P));
+for j = 1:15
+PB = PB + R(:,(j+1)*N+1:(j+2)*N);
+end
+
+save test; % load test
+
+f=2;
+figure(f); set(gcf,'color','w');
+for i= length(t)
+    figure(f); clf;  subplot(2,1,1); 
+    plot(x,hb(i,:),'b','LineWidth',3); hold on; 
+    plot(x,bcd,'g','LineWidth',3);
+    legend('hb','bcd');
+   
+   figure(f); subplot(2,1,2);
+   plot(x,P(i,:),'k','LineWidth',3); hold on;
+   plot(x,PB(i,:),'c','LineWidth',5); 
+%       plot(x,PB2(i,:),'c','LineWidth',2); 
+%          plot(x,PB3(i,:),'c','LineWidth',3); 
+%             plot(x,PB4(i,:),'c','LineWidth',4); 
+   
+    plot(x,PB2H(i,:),'m','LineWidth',3);
+    plot(x,PB2H2(i,:),'r','LineWidth',3);
+   % legend('free Pr','Pr-bcd','Pr-bcd-hb','Pr-bcd-hb_2');
+end
+
+
+function dRdt = sys(t,R,Pars)
+N = Pars(1);
+bcd = Pars(2:end)';
+
+
+hb = R(1:N); %
+P = R(N+1:2*N);  % 
+PB1 = R(2*N+1:3*N);  % 
+PB2 = R(3*N+1:4*N);  % 
+PB3 = R(4*N+1:5*N); 
+PB4 = R(5*N+1:6*N); 
+PB5 = R(6*N+1:7*N); 
+PB1H = R(7*N+1:8*N); 
+PB2H = R(8*N+1:9*N); 
+PB3H = R(9*N+1:10*N); 
+PB4H = R(10*N+1:11*N); 
+PB5H = R(11*N+1:12*N); 
+PB1H2 = R(12*N+1:13*N); 
+PB2H2 = R(13*N+1:14*N); 
+PB3H2 = R(14*N+1:15*N); 
+PB4H2 = R(15*N+1:16*N); 
+PB5H2 = R(16*N+1:17*N); 
+
+% bcd binding matrix
+kb = [0,1,0,0,0,0;
+      1,0,1,0,0,0;
+      0,1,0,1,0,0;
+      0,0,1,0,1,0;
+      0,0,0,1,0,1;
+      0,0,0,0,1,0];
+% hb binding rates
+  kh1 = 1;
+  kh2 = 1;
+  kj1 = 1;
+  kj2= 1; % hb2 unbinding
+  
+  % synthesis rates
+  kBs =  [1,1,1,1,1];
+  kH1s = 2*[1,1,1,1,1];
+  kH2s = 3*[1,1,1,1,1];
+  
+  kd = 1; 
+  
+
+
+
+% promoter binding
+dP   =               - kb(1,2).*bcd.*P   + kb(2,1).*PB1;
+dPB1 = - kb(2,1)*PB1 - kb(2,3).*bcd.*PB1 + kb(3,2).*PB2 + kb(1,2).*bcd.*P   -kh1*PB1.*hb + kj1*PB1H; % 1->0 1->2, 2->1, 0->1
+dPB2 = - kb(3,2)*PB2 - kb(3,4).*bcd.*PB2 + kb(4,3).*PB3 + kb(2,3).*bcd.*PB1 -kh1*PB2.*hb + kj1*PB2H;
+dPB3 = - kb(4,3)*PB3 - kb(4,5).*bcd.*PB3 + kb(5,4).*PB4 + kb(3,4).*bcd.*PB2 -kh1*PB3.*hb + kj1*PB3H;
+dPB4 = - kb(5,4)*PB4 - kb(5,6).*bcd.*PB4 + kb(6,5).*PB5 + kb(4,5).*bcd.*PB3 -kh1*PB4.*hb + kj1*PB4H;
+dPB5 = - kb(6,5)*PB5                                    + kb(5,6).*bcd.*PB4 -kh1*PB5.*hb + kj1*PB5H;
+
+dPB1H = kh1*PB1.*hb - kj1*PB1H - kh2*PB1H.*hb + kj2*PB1H2; % 
+dPB2H = kh1*PB2.*hb - kj1*PB2H - kh2*PB2H.*hb + kj2*PB2H2;
+dPB3H = kh1*PB3.*hb - kj1*PB3H - kh2*PB3H.*hb + kj2*PB3H2;
+dPB4H = kh1*PB4.*hb - kj1*PB4H - kh2*PB4H.*hb + kj2*PB4H2;
+dPB5H = kh1*PB5.*hb - kj1*PB5H - kh2*PB5H.*hb + kj2*PB5H2;
+
+dPB1H2 =  kh2*PB1H.*hb - kj2*PB1H2; % 
+dPB2H2 =  kh2*PB2H.*hb - kj2*PB2H2;
+dPB3H2 =  kh2*PB3H.*hb - kj2*PB3H2;
+dPB4H2 =  kh2*PB4H.*hb - kj2*PB4H2;
+dPB5H2 =  kh2*PB5H.*hb - kj2*PB5H2;
+
+
+
+s = [kBs(1)*PB1 , kBs(2)*PB2 , kBs(3)*PB3 , kBs(4)*PB4 , kBs(5)*PB5 , ...
+    kH1s(1)*PB1H , kH1s(2)*PB2H ,kH1s(3)*PB3H ,kH1s(4)*PB4H ,kH1s(5)*PB5H , ...
+    kH2s(1)*PB1H2, kH2s(2)*PB2H2,kH2s(3)*PB3H2,kH2s(4)*PB4H2,kH2s(5)*PB5H2 ];
+
+err = find(s<0);
+% 
+% save test2; 
+% if length(err) > 10
+%    return
+% end
+
+
+dhb = kBs(1)*PB1 + kBs(2)*PB2 + kBs(3)*PB3 + kBs(4)*PB4 + kBs(5)*PB5 + ...
+    kH1s(1)*PB1H + kH1s(2)*PB2H +kH1s(3)*PB3H +kH1s(4)*PB4H +kH1s(5)*PB5H + ...
+kH2s(1)*PB1H2 + kH2s(2)*PB2H2 +kH2s(3)*PB3H2 +kH2s(4)*PB4H2 +kH2s(5)*PB5H2 - kd*hb ;
+
+dRdt = [dhb; dP;
+    dPB1; dPB2; dPB3; dPB4; dPB5; 
+    dPB1H; dPB2H; dPB3H; dPB4H; dPB5H; 
+    dPB1H2; dPB2H2; dPB3H2; dPB4H2; dPB5H2 ];
+
+
+
+%%

@@ -26,6 +26,10 @@ load([folder,edat14]);
      Icc14 = imflip(imflip(Icc14,1),2);
      age = getage(H,cent)
            
+     [miss_rate{z,1}(n),miss_rate{z,2}(n),miss_rate{z,3}(n)] =  divide_regs(L2,H,pts1,pts2,ptr_nucin2,handles.In,0);
+    load test2;  
+    
+     
      load([folder,edat13]); 
    Io = uint8(zeros(h,w,3));
      Io(:,:,1) = 1*uint8(200*L1);
@@ -59,11 +63,11 @@ load([folder,edat14]);
        subplot(4,1,4); imshow(Icc11);
      set(gcf,'color','k');
      
-     imwrite(Icc14,[fout,'BAC01_30C_cc14.tif'],'tif');
-     imwrite(Icc13,[fout,'BAC01_30C_cc13.tif'],'tif');
-     imwrite(Icc12,[fout,'BAC01_30C_cc12.tif'],'tif');
-     imwrite(Icc11,[fout,'BAC01_30C_cc11.tif'],'tif');
-     
+%      imwrite(Icc14,[fout,'BAC01_30C_cc14.tif'],'tif');
+%      imwrite(Icc13,[fout,'BAC01_30C_cc13.tif'],'tif');
+%      imwrite(Icc12,[fout,'BAC01_30C_cc12.tif'],'tif');
+%      imwrite(Icc11,[fout,'BAC01_30C_cc11.tif'],'tif');
+%      
 
 %% MP 01 22C
 edat14 = 'BAC01b_22C_y_hb27_data.mat'; % cc14

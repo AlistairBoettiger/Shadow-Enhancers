@@ -1,4 +1,12 @@
-
+%%                                  model_hb.m
+% 
+% 
+% Alistair Boettiger                                   Date Begun: 12/11/10
+% Levine Lab                                   Version Functional: 12/11/10
+%                                                   Last Modified: 12/12/10 
+%
+%% Code Description:
+% Model hb expression to match binding site data without cooperativity.  
 
 function model_hb
 clear all;
@@ -76,6 +84,10 @@ dPBH2 =  k_hon2.*PBH.*hb - k_hoff2.*PBH2;
 
 % hb synthesis and decay
 dhb = k_bs*PB + k_hbs*PBH2 - kd*hb - k_hon.*PB.*hb - k_hon2.*PBH.*hb;
+
+dhb = k_bs*bcd.^5./(Km^5+bcd. + k_hbs*PBH2 - kd*hb - k_hon.*PB.*hb - k_hon2.*PBH.*hb;
+
+
 dRdt = [dhb; dP; dPB; dPBH; dPBH2];
 
 

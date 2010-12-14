@@ -1,9 +1,17 @@
-
+%%                                  model_hb.m
+% 
+% 
+% Alistair Boettiger                                   Date Begun: 12/11/10
+% Levine Lab                                   Version Functional: 12/11/10
+%                                                   Last Modified: 12/12/10 
+%
+%% Code Description:
+% Model hb expression to match binding site data without cooperativity.  
 
 function model_hb
 clear all;
 
-N  = 100;  T = 1500;
+N  = 100;  T = 2500;
 x = linspace(0,1,N);
 
 tau = 1/5; % from Gregor 2007
@@ -29,19 +37,22 @@ P=R(:,N+1:2*N);  %
 PB=R(:,2*N+1:3*N);  % 
 PBH=R(:,3*N+1:4*N);  % 
 PBH2=R(:,4*N+1:5*N); 
-save test;
+save test; % load test
 
-figure(1); set(gcf,'color','w');
-for i=1:length(t)
-    figure(1); clf; subplot(2,1,1); 
-    plot(x,hb(i,:),'b'); hold on; 
-    plot(x,bcd,'g');
+f=2;
+figure(f); set(gcf,'color','w');
+for i= length(t) % 1:length(t)
+    figure(f); clf; subplot(2,1,1); 
+    plot(x,hb(i,:),'b','LineWidth',3); hold on; 
+    plot(x,bcd,'g','LineWidth',3);
+    legend('hb','bcd');
    
-   figure(1); subplot(2,1,2);
-   plot(x,P(i,:),'k'); hold on;
-   plot(x,PB(i,:),'c'); 
-    plot(x,PBH(i,:),'m');
-    plot(x,PBH2(i,:),'r');
+   figure(f); subplot(2,1,2);
+   plot(x,P(i,:),'k','LineWidth',3); hold on;
+   plot(x,PB(i,:),'c','LineWidth',3); 
+    plot(x,PBH(i,:),'m','LineWidth',3);
+    plot(x,PBH2(i,:),'r','LineWidth',3);
+    legend('free Pr','Pr-bcd','Pr-bcd-hb','Pr-bcd-hb_2');
 end
 
 
@@ -50,15 +61,27 @@ N = Pars(1);
 bcd = Pars(2:end)';
 
 
-kd = 10;
+% kd = 10;
+% k_bon = 2;
+% k_boff = .5;
+% k_hon = 1;
+% k_hoff = .5;
+% k_hon2 = 6;
+% k_hoff2 = .1; 
+% k_bs = 1;
+% k_hbs = 5;
+
+kd = 2;
 k_bon = 2;
 k_boff = .5;
-k_hon = 1;
+k_hon = 0;
 k_hoff = .5;
-k_hon2 = 6;
-k_hoff2 = .1; 
+k_hon2 = 0;
+k_hoff2 = .5; 
 k_bs = 1;
-k_hbs = 5;
+k_hbs = 2;
+k_hbs2 = 3;
+
 
 hb = R(1:N); %
 P=R(N+1:2*N);  % 
@@ -73,7 +96,12 @@ dPBH = k_hon.*PB.*hb - k_hoff.*PBH - k_hon2.*PBH.*hb + k_hoff2.*PBH2;
 dPBH2 =  k_hon2.*PBH.*hb - k_hoff2.*PBH2;
 
 % hb synthesis and decay
-dhb = k_bs*PB + k_hbs*PBH2 - kd*hb - k_hon.*PB.*hb - k_hon2.*PBH.*hb;
+%dhb = k_bs*PB + k_hbs*PBH2 - kd*hb - k_hon.*PB.*hb - k_hon2.*PBH.*hb;
+
+Km = .1;
+dhb = k_bs*bcd.^5./(Km^5+bcd.^5)+ k_hbs*PBH + k_hbs2*PBH2 - kd*hb - k_hon.*PB.*hb - k_hon2.*PBH.*hb;
+
+
 dRdt = [dhb; dP; dPB; dPBH; dPBH2];
 
 
