@@ -9,6 +9,103 @@ clear all
 
 fout = '/Users/alistair/Documents/Berkeley/Levine_Lab/Projects/Shadow Enhancers/Results/';
 
+
+
+
+%% Boundary vs. central region comparison for cycle 13 embryos
+clear all;
+fout = '/Users/alistair/Documents/Berkeley/Levine_Lab/Projects/Shadow Enhancers/Results/';
+folder =  '/Volumes/Data/Lab Data/Shadow_data/Processed/';
+
+edat09 = 'MP09_22C_y_hb41_data.mat'; % cc14 41 44
+edat09 = 'BAC09_22C_y_hb43_data.mat'; % cc14   31 35 43
+edat09 = 'BAC09_30C_y_hb16_data.mat'; % cc14   31 35 43
+edat01 = 'MP01_22C_y_hb06_data.mat'; % cc14
+edat02 = 'MP02_22C_y_hb51_data.mat'; % cc14  44  51
+
+
+
+load([folder,edat02]); 
+          age = getage(H,cent)         
+ divide_regs(L2,H,pts1,pts2,ptr_nucin2,handles.In,0);
+    load test2;  
+    Ymax = 250;
+    ect = intersect(setdiff(pts1,pts2),s1s');
+   Ec = ismember(H,ect);
+    
+       Iz = uint8(zeros(h,w,3));
+     Iz(:,:,1) = 1*uint8(Ymax*L1);
+     Iz(:,:,2) = 1*uint8(Ymax*L1) + .9*handles.In;% - 255*uint8(Ec);
+     Iz(:,:,3) = .9*handles.In -Iz(:,:,1);
+     Im_seg02 = uint8(bsxfun(@times,double(Iz)/215,double(handles.In)));
+     
+     Im_seg02 = imflip(imflip(Im_seg02,1),0) ;
+       Im_seg02 = imresize(Im_seg02,.5);
+     figure(1); clf; imshow(Im_seg02);
+
+
+
+
+   %  figure(2); clf; imshow(Ec);     
+%      
+%             Iz = uint8(zeros(h,w,3));
+%      Iz(:,:,1) = 1*uint8(Ymax*L1);
+%      Iz(:,:,2) = 1*uint8(Ymax*L2) ;
+%      Iz(:,:,3) = .6*handles.In ;
+%      Im_seg09 = uint8(bsxfun(@times,double(Iz)/215,double(handles.In)));
+%      Im_seg09 = imflip(imflip(Im_seg09,2),1);
+%      figure(3); clf; imshow(Im_seg09);
+
+load([folder,edat01]); 
+           age = getage(H,cent)         
+ divide_regs(L2,H,pts1,pts2,ptr_nucin2,handles.In,0);
+    load test2;  
+    Ymax = 250;
+    ect = intersect(setdiff(pts1,pts2),s1s');
+   Ec = ismember(H,ect);
+    
+       Iz = uint8(zeros(h,w,3));
+     Iz(:,:,1) = 1*uint8(Ymax*L1);
+     Iz(:,:,2) = 1*uint8(Ymax*L1)+.6*handles.In;% - 255*uint8(Ec);
+     Iz(:,:,3) = .6*handles.In  -Iz(:,:,1);
+     Im_seg01 = uint8(bsxfun(@times,double(Iz)/215,double(handles.In)));
+     figure(1); clf; imshow(Im_seg01);
+
+
+     
+     
+load([folder,edat09]); 
+          age = getage(H,cent)         
+ divide_regs(L2,H,pts1,pts2,ptr_nucin2,handles.In,0);
+    load test2;  
+    Ymax = 250;
+    ect = intersect(setdiff(pts1,pts2),s1s');
+   Ec = ismember(H,ect);
+    
+       Iz = uint8(zeros(h,w,3));
+     Iz(:,:,1) = 1*uint8(Ymax*L1);
+     Iz(:,:,2) = 1*uint8(Ymax*L1) +2*handles.In;% - 255*uint8(Ec);
+     Iz(:,:,3) = 2*handles.In  -Iz(:,:,1);
+     Im_seg09 = uint8(bsxfun(@times,double(Iz)/195,double(handles.In)));
+     Im_seg09 = imflip(Im_seg09,1); 
+     figure(1); clf; imshow(Im_seg09);
+ 
+   
+Im_seg02 = Im_seg02(:,1:600,:);
+Im_seg01 = Im_seg01(:,1:600,:);
+Im_seg09 = Im_seg09(:,1:600,:);
+
+     figure(1); clf; subplot(1,3,1); imshow(Im_seg02); 
+     subplot(1,3,2); imshow(Im_seg01);
+     subplot(1,3,3); imshow(Im_seg09); set(gcf,'color','k'); 
+     
+     
+           imwrite(Im_seg01,[fout,'Rep_01.tif'],'tif');
+        imwrite(Im_seg02,[fout,'Rep_02.tif'],'tif');
+        imwrite(Im_seg09,[fout,'Rep_09.tif'],'tif');
+      
+
+
 %% Boundary vs. central region comparison for cycle 13 embryos
 folder =  '/Volumes/Data/Lab Data/Shadow_data/Processed/';
 
