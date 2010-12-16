@@ -10,7 +10,7 @@
 % adapted from model_hb.m to account for bicoid binding sites explicitly 
 
 
-%  Precisely the Holloway Model. 
+%  Modified Holloway Model to work with a single promoter (not separate hb responsive and bcd responive promoters). 
 %
 
 function model_hb_bcd

@@ -15,7 +15,7 @@
 %% Source Code:
 
 
-function BoxDist(data,names,xlab)
+function BoxDist(data,names,xlab,labs)
 % 
 % 
 % data = plot_lowon;
@@ -50,7 +50,7 @@ boxplot(B,'orientation','horizontal','whisker',1,'colorgroup',C,'colors',C1,'lab
 hold on;
 plot(-1,-1,'color',C1(1,:)); 
 plot(-1,-1,'color',C1(2,:));
-legend('30C','22C'); 
+legend(labs); 
 set(gca,'FontSize',15);
 xlabel(xlab,'FontSize', 16);
 

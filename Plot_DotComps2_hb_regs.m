@@ -22,6 +22,7 @@
 % Modified 11/19 added more statistical signficance testing lines.  
 % Modified 12/09 to fix merge data error and to streamline region
 % processing.  
+% Modified to save data
 %% Source Code
 clear all;
 
@@ -136,17 +137,12 @@ end
 
 close all; 
 
-% save hb_SD-region_data; 
-% save hb_SD-10-21-10;% includes ectopic repression analysis
-% save hb_SD-10-18-10;% includes ectopic repression analysis
-% save hb_SD-10-13-10;
-%  save hb_SD-9-13-10
- %  save hb_shadow_yellow_data;   % load hb_shadow_yellow_data;
+save hb_SDreg_12-15-10
+
 
 %%
 
- % clear all; load hb_SD-12-09-10
-
+ % clear all; load hb_SDreg_12-15-10
  % Merge data
  
 %  %
@@ -256,7 +252,7 @@ ylim([0,.5*ymax]); title([reg{r}, ' early cc14']);
 
 f2 = figure(20+r); subplot(3,1,1); 
    set(f2,'Position',[450,550,400,1000]);
-BoxDist(plot_miss14,names,[reg{r}, ' early cc14']);
+BoxDist(plot_miss14,names,[reg{r}, ' early cc14'],{'30C','22C'});
 xlim([0,1]);
 
   P = zeros(G);
@@ -285,9 +281,11 @@ CompDist(plot_miss13,x,xx,method,sigma,names,xlab,F)
 ylim([0,ymax]); title([reg{r}, ' cc13']);
 
 figure(20+r); subplot(3,1,2); 
-BoxDist(plot_miss13,names,[reg{r}, ' cc13']);
+BoxDist(plot_miss13,names,[reg{r}, ' cc13'],{'30C','22C'});
 xlim([0,1]);
 
+
+box_data13{r} = plot_miss13;
 
   P = zeros(G);
     for j = 1:G
@@ -314,8 +312,10 @@ CompDist(plot_miss12,x,xx,method,sigma,names,xlab,F)
 ylim([0,.5*ymax]);  title([reg{r}, ' cc11 & 12']);
 
 figure(20+r); subplot(3,1,3); 
-BoxDist(plot_miss12,names,[reg{r}, ' cc11 & 12']);
+BoxDist(plot_miss12,names,[reg{r}, ' cc11 & 12'],{'30C','22C'});
 xlim([0,1]);
+
+box_data12{r} = plot_miss12;
 
     P = zeros(G);
     for j = 1:G
@@ -328,18 +328,42 @@ xlim([0,1]);
         'YMinorTick','on'); title([reg{r}, ' cc11 & 12']); 
         set(gcf,'color','w');
     
-        
-     saveas(f1,[fout,'hb_graphs_',reg{r},'.ai'],'ai');
-     
-     saveas(f2,[fout,'hb_bars_',reg{r},'.ai'],'ai');
-         
-         saveas(f1,[fout,'hb_graphs_',reg{r},'.jpg'],'jpg');
-     
-     saveas(f2,[fout,'hb_bars_',reg{r},'.jpg'],'jpg');
-     
-     saveas(f3,[fout,'hb_pvals_',reg{r},'.jpg'],'jpg');
+% Export Data        
+%      saveas(f1,[fout,'hb_graphs_',reg{r},'.ai'],'ai');
+%      saveas(f2,[fout,'hb_bars_',reg{r},'.ai'],'ai');
+%      saveas(f1,[fout,'hb_graphs_',reg{r},'.jpg'],'jpg');     
+%      saveas(f2,[fout,'hb_bars_',reg{r},'.jpg'],'jpg');
+%      saveas(f3,[fout,'hb_pvals_',reg{r},'.jpg'],'jpg');
 
 end
+
+
+
+
+%% 
+
+box_cc13 = [box_data13{2}(1),box_data13{3}(1),    box_data13{2}(3),box_data13{3}(3),     box_data13{2}(5),box_data13{3}(5)];
+figure(1); clf; BoxDist(box_cc13,names([1,1,3,3,5,5]),'missing',{'Boundary','Central'}); title('cycle 13'); xlim([0,.5]);
+figure(1);  set(gcf,'color','w');
+  P = zeros(G);
+    for j = 1:G
+        for k=1:G
+        P(j,k) = ranksum(box_cc13{j},box_cc13{k});
+        end
+    end
+    figure(3); clf;  imagesc(P); colormap(jet); colorbar; colordef white; set(gca,'color','w');
+
+box_cc12 = [box_data12{2}(1),box_data12{3}(1),    box_data12{2}(3),box_data12{3}(3),     box_data12{2}(5),box_data12{3}(5)];
+figure(2); clf; BoxDist(box_cc12,names([1,1,3,3,5,5]),'missing',{'Boundary','Central'}); title('cycle 12');   xlim([0,.5]);
+
+  P = zeros(G);
+    for j = 1:G
+        for k=1:G
+        P(j,k) = ranksum(box_cc12{j},box_cc12{k});
+        end
+    end
+     figure(4); clf; imagesc(P); colormap(jet); colorbar; colordef white; set(gca,'color','w');
+
 
 % 
 % 

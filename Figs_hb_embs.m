@@ -9,7 +9,227 @@ clear all
 
 fout = '/Users/alistair/Documents/Berkeley/Levine_Lab/Projects/Shadow Enhancers/Results/';
 
+%% Boundary vs. central region comparison for cycle 13 embryos
+folder =  '/Volumes/Data/Lab Data/Shadow_data/Processed/';
 
+edat09 = 'MP09_22C_y_hb50_data.mat'; % cc13
+edat01 = 'BAC01b_22C_y_hb38_data.mat'; % cc13
+edat02 = 'BAC02_22C_y_hb08_data.mat'; % cc13  04  06  08
+
+
+load([folder,edat09]); 
+          age = getage(H,cent)         
+     [miss_rate1,miss_rate2,miss_rate3] =  divide_regs(L2,H,pts1,pts2,ptr_nucin2,handles.In,0);
+    load test2;  
+    Ymax = 250;
+     imReg3 = ismember(H,onReg3);
+     imReg2 = ismember(H,onReg2); 
+       Iz = uint8(zeros(h,w,3));
+     Iz(:,:,1) = 1*uint8(Ymax*L1)+ 255*uint8(imReg3) - 255*uint8(imReg2);
+     Iz(:,:,2) = 1*uint8(Ymax*L1) + .6*handles.In - 255*uint8(imReg3)   + 255*uint8(imReg2) ;
+     Iz(:,:,3) = .6*handles.In - Iz(:,:,1) + 205*uint8(imReg2);
+     Im_seg09 = uint8(bsxfun(@times,double(Iz)/215,double(handles.In)));
+     
+     Im_seg09 = imflip(imflip(Im_seg09,2),1);
+     figure(1); clf; imshow(Im_seg09);
+
+     
+     
+     
+     
+             Ns1 = ismember(H, s1s); % map of cells in region
+        Ns2 = ismember(H, s2s);
+        Ns3 = ismember(H, s3s);
+      
+      Iz = uint8(zeros(h,w,3));
+     Iz(:,:,1) =255*uint8(Ns3) ;
+     Iz(:,:,2) =  .5*handles.In+ 255*uint8(Ns1) + 255*uint8(Ns2);
+     Iz(:,:,3) = .5*handles.In + 255*uint8(Ns2);
+     reg_schema = uint8(bsxfun(@times,double(Iz)/215,double(handles.In))); 
+     reg_schema = imflip(imflip(reg_schema,1),2); 
+     
+     figure(2); clf; imshow(reg_schema)
+     
+           imwrite(reg_schema,[fout,'reg_schema.tif'],'tif');
+     
+
+     edat01 = 'BAC01b_22C_y_hb38_data.mat'; % cc13
+load([folder,edat01]); 
+          age = getage(H,cent)         
+     [miss_rate1,miss_rate2,miss_rate3] =  divide_regs(L2,H,pts1,pts2,ptr_nucin2,handles.In,0);
+    load test2;  
+    Ymax = 250;
+     imReg3 = ismember(H,onReg3);
+     imReg2 = ismember(H,onReg2); 
+       Iz = uint8(zeros(h,w,3));
+     Iz(:,:,1) = 1*uint8(Ymax*L1)+ 255*uint8(imReg3) - 255*uint8(imReg2);
+     Iz(:,:,2) = 1*uint8(Ymax*L1) + 1*handles.In - 255*uint8(imReg3)   + 255*uint8(imReg2) ;
+     Iz(:,:,3) = 1*handles.In - Iz(:,:,1) + 205*uint8(imReg2);
+     Im_seg01 = uint8(bsxfun(@times,double(Iz)/55,double(handles.In)));
+     Im_seg01 = imflip(Im_seg01,2); 
+     figure(1); clf; imshow(Im_seg01); 
+
+
+load([folder,edat02]); 
+          age = getage(H,cent)         
+     [miss_rate1,miss_rate2,miss_rate3] =  divide_regs(L2,H,pts1,pts2,ptr_nucin2,handles.In,0);
+    load test2;  
+    Ymax = 250;
+     imReg3 = ismember(H,onReg3);
+     imReg2 = ismember(H,onReg2); 
+       Iz = uint8(zeros(h,w,3));
+     Iz(:,:,1) = 1*uint8(Ymax*L1)+ 255*uint8(imReg3) - 255*uint8(imReg2);
+     Iz(:,:,2) = 1*uint8(Ymax*L1) + .8*handles.In - 255*uint8(imReg3)   + 255*uint8(imReg2) ;
+     Iz(:,:,3) = .8*handles.In - Iz(:,:,1) + 255*uint8(imReg2);
+     Im_seg = uint8(bsxfun(@times,double(Iz)/115,double(handles.In)));
+
+     Im_seg02 = imflip(imflip(Im_seg,2),1);
+     figure(1); clf; imshow(Im_seg02); 
+     
+     figure(1); clf; subplot(1,3,1); imshow(Im_seg02); 
+     subplot(1,3,2); imshow(Im_seg01);
+     subplot(1,3,3); imshow(Im_seg09); set(gcf,'color','k'); 
+     
+      imwrite(Im_seg01,[fout,'Im_seg01.tif'],'tif');
+        imwrite(Im_seg02,[fout,'Im_seg02.tif'],'tif');
+        imwrite(Im_seg09,[fout,'Im_seg09.tif'],'tif');
+      
+      
+
+%% Temperature comparison for cycle 14 boundary embryos 
+% MP01 30C vs 22C
+folder =  '/Volumes/Data/Lab Data/Shadow_data/Processed/';
+
+
+edat14 = 'BAC01b_30C_y_hb18_data.mat'; % cc14
+
+edat14 = 'BAC01b_30C_y_hb15_data.mat'; % cc14
+load([folder,edat14]); 
+          age = getage(H,cent)
+          
+     [miss_rate1,miss_rate2,miss_rate3] =  divide_regs(L2,H,pts1,pts2,ptr_nucin2,handles.In,0);
+    load test2;  
+     imReg3 = ismember(H,onReg3);
+       Iz = uint8(zeros(h,w,3));
+     Iz(:,:,1) = 1*uint8(200*L1)+ 255*uint8(imReg3);
+     Iz(:,:,2) = 1*uint8(200*L1) + .8*handles.In - 255*uint8(imReg3);
+     Iz(:,:,3) = .8*handles.In - Iz(:,:,1);
+     B1_30C = uint8(bsxfun(@times,double(Iz)/175,double(handles.In)));
+
+        
+    % edat14 = 'BAC01b_22C_y_hb27_data.mat'; % cc14
+     % edat14 =   'MP01_22C_y_hb06_data.mat';
+     edat14 =   'MP01_22C_y_hb07_data.mat';
+     load([folder,edat14]);
+          age = getage(H,cent)
+       divide_regs(L2,H,pts1,pts2,ptr_nucin2,handles.In,0);
+    load test2;     
+     imReg3 = ismember(H,onReg3);     
+       Iz = uint8(zeros(h,w,3));
+     Iz(:,:,1) = 1*uint8(200*L1)+ 255*uint8(imReg3);
+     Iz(:,:,2) = 1*uint8(200*L1) + .8*handles.In - 255*uint8(imReg3);
+     Iz(:,:,3) = .8*handles.In - Iz(:,:,1);
+     B1_22C = uint8(bsxfun(@times,double(Iz)/215,double(handles.In)));
+     B1_22C = imflip(B1_22C,1); 
+
+          figure(2); subplot(2,2,2); imshow(B1_22C);
+            figure(2); subplot(2,2,4); imshow(B1_30C);
+%
+
+% MP02 
+
+%edat14 = 'MP02_30C_LacZ_hb29_data.mat'; % cc14
+edat14 = 'MP02_30C_LacZ_hb10_data.mat'; % cc14 30-good 44 43 42
+load([folder,edat14]); 
+     [miss_rate1,miss_rate2,miss_rate3] =  divide_regs(L2,H,pts1,pts2,ptr_nucin2,handles.In,0);
+    load test2;  
+     imReg3 = ismember(H,onReg3);
+       Iz = uint8(zeros(h,w,3));
+     Iz(:,:,1) = 1*uint8(200*L1)+ 255*uint8(imReg3);
+     Iz(:,:,2) = 1*uint8(200*L1) + .8*handles.In - 255*uint8(imReg3);
+     Iz(:,:,3) = .8*handles.In - Iz(:,:,1);
+     B2_30C = uint8(bsxfun(@times,double(Iz)/215,double(handles.In)));
+     B2_30C = imflip(B2_30C,1);
+        
+     
+   %  edat14 = 'BAC02_22C_y_hb11_data.mat'; % cc14
+     edat14 = 'MP02_22C_y_hb57_data.mat'; % cc14 % 77 81 57
+     load([folder,edat14]); 
+     [miss_rate1,miss_rate2,miss_rate3] =  divide_regs(L2,H,pts1,pts2,ptr_nucin2,handles.In,0);
+    load test2;     
+     imReg3 = ismember(H,onReg3);     
+       Iz = uint8(zeros(h,w,3));
+     Iz(:,:,1) = 1*uint8(200*L1)+ 255*uint8(imReg3);
+     Iz(:,:,2) = 1*uint8(200*L1) + .8*handles.In - 255*uint8(imReg3);
+     Iz(:,:,3) = .8*handles.In - Iz(:,:,1);
+     B2_22C = uint8(bsxfun(@times,double(Iz)/165,double(handles.In)));
+     
+
+     
+     
+     
+     
+     
+     
+     
+ %% MP09 boundary region
+ 
+      
+edat14 = 'MP09_22C_y_hb01_data.mat'; % cc14
+     load([folder,edat14]); 
+     [miss_rate1,miss_rate2,miss_rate3] =  divide_regs(L2,H,pts1,pts2,ptr_nucin2,handles.In,0);
+    load test2;     
+     imReg3 = ismember(H,onReg3);     
+       Iz = uint8(zeros(h,w,3));
+     Iz(:,:,1) = 1*uint8(200*L1)+ 255*uint8(imReg3);
+     Iz(:,:,2) = 1*uint8(200*L1) + .8*handles.In - 255*uint8(imReg3);
+     Iz(:,:,3) = .8*handles.In - Iz(:,:,1);
+     BC_22C = uint8(bsxfun(@times,double(Iz)/205,double(handles.In)));
+     BC_22C = imflip(BC_22C,1); 
+ 
+edat14 = 'BAC09_30C_y_hb07_data.mat'; % cc14
+load([folder,edat14]); 
+     [miss_rate1,miss_rate2,miss_rate3] =  divide_regs(L2,H,pts1,pts2,ptr_nucin2,handles.In,0);
+    load test2;  
+     imReg3 = ismember(H,onReg3);
+       Iz = uint8(zeros(h,w,3));
+     Iz(:,:,1) = 1*uint8(200*L1)+ 255*uint8(imReg3);
+     Iz(:,:,2) = 1*uint8(200*L1) + .8*handles.In - 255*uint8(imReg3);
+     Iz(:,:,3) = .8*handles.In - Iz(:,:,1);
+     BC_30C = uint8(bsxfun(@times,double(Iz)/185,double(handles.In)));
+    BC_30C = imflip(imflip(BC_30C,1),2); 
+        
+
+
+
+          figure(2); subplot(2,3,3); imshow(BC_22C);
+            figure(2); subplot(2,3,6); imshow(BC_30C);
+ %%        Plot and write to disk   
+     
+       
+     
+     
+          figure(2); clf; subplot(2,3,1); imshow(B2_22C);
+     figure(2); subplot(2,3,4); imshow(B2_30C);
+
+     
+     
+          figure(2); subplot(2,3,2); imshow(B1_22C);
+            figure(2); subplot(2,3,5); imshow(B1_30C);
+            
+          figure(2); subplot(2,3,3); imshow(BC_22C);
+            figure(2); subplot(2,3,6); imshow(BC_30C);
+            
+            set(gcf,'color','k');
+     
+    imwrite(B1_22C,[fout,'B1_22C_bndry.tif'],'tif');
+      imwrite(B1_30C,[fout,'B1_30C_bndry.tif'],'tif');
+      imwrite(B2_22C,[fout,'B2_22C_bndry.tif'],'tif');
+      imwrite(B2_30C,[fout,'B2_30C_bndry.tif'],'tif');
+            
+       imwrite(BC_22C,[fout,'BC_22C_bndry.tif'],'tif');
+      imwrite(BC_30C,[fout,'BC_30C_bndry.tif'],'tif');   
+            
 %% MP01 30C
 folder =  '/Volumes/Data/Lab Data/Shadow_data/Processed/';
 edat14 = 'BAC01b_30C_y_hb18_data.mat'; % cc14
@@ -26,8 +246,7 @@ load([folder,edat14]);
      Icc14 = imflip(imflip(Icc14,1),2);
      age = getage(H,cent)
            
-     [miss_rate{z,1}(n),miss_rate{z,2}(n),miss_rate{z,3}(n)] =  divide_regs(L2,H,pts1,pts2,ptr_nucin2,handles.In,0);
-    load test2;  
+
     
      
      load([folder,edat13]); 
@@ -38,6 +257,11 @@ load([folder,edat14]);
      Icc13 = uint8(bsxfun(@times,double(Io)/155,double(handles.In)));
      Icc13 = imflip(Icc13,2);
      age = getage(H,cent)
+     
+
+    
+    
+     
      
      load([folder,edat12]); 
    Io = uint8(zeros(h,w,3));
@@ -87,7 +311,10 @@ load([folder,edat14]);
      Icc14 = uint8(bsxfun(@times,double(Io)/200,double(handles.In)));
 
      age = getage(H,cent)
-           
+               
+   
+     
+     
      load([folder,edat13]); 
    Io = uint8(zeros(h,w,3));
      Io(:,:,1) = 1*uint8(200*L1) ;
