@@ -44,6 +44,7 @@ miss_cnt = cell(1,K);
 miss_rate = cell(1,K); 
 nd = cell(1,K); 
 lowon = cell(1,K); 
+cell_var = cell(1,K); 
 ectop_cnt = cell(1,K);
 ectop_rate = cell(1,K);
 
@@ -76,7 +77,7 @@ for z=1:K % k=2;
       %     miss_cnt{z}(n) =  length(intersect(setdiff(pts2,pts1), ptr_nucin2));  
           % miss_cnt{z}(n) = anlz_major_reg(folder,emb_roots{z},emb );
            miss_rate{z}(n) = miss_cnt{z}(n)/length(pts2); 
-            [lowon{z}(n)] = lowon_fxn(H,handles,nin2,ptr_nucin2,[emb_roots{z},emb],0);     
+            [lowon{z}(n),cell_var{z}(n)] = lowon_fxn(H,handles,nin2,ptr_nucin2,[emb_roots{z},emb],1);     
            ectop_cnt{z}(n) = length(intersect(setdiff(pts1,pts2),setdiff(ptr_nucin1,ptr_nucin2)')); 
            if length(H) > 2000
                im_dim = 2048;
@@ -209,10 +210,10 @@ plot_miss = cell(1,G);
 % colordef black; set(gcf,'color','k');
 colordef white; set(gcf,'color','w');
 
-x = linspace(0,1,25);  % range and number of bins for histogram
+x = linspace(0,1,15);  % range and number of bins for histogram
 xx = linspace(0,1,100); % range a number of bins for interpolated distribution
  method = 'pcubic'; % method for interpolation
-sigma = .2;  % smoothing factor for interpolation
+sigma = .05;  % smoothing factor for interpolation
 y = CompDist(plot_miss,x,xx,method,sigma,names,xlab,14);
 
 for k=1:G
@@ -224,6 +225,12 @@ title('cc14 embryos');
 
 xlab = 'fraction of ectopic on nuclei';
 
+
+ranksum(plot_miss{1},plot_miss{2})
+
+ranksum(plot_miss{1},plot_miss{3})
+
+ranksum(plot_miss{3},plot_miss{2})
 
 
 
@@ -253,7 +260,7 @@ xlab = '\sigma/\mu';
 
 
 plot_miss = cell(1,G); 
- for k=1:G;     plot_miss{k} = lowon{k}(cc14{k}); end
+ for k=1:G;     plot_miss{k} = cell_var{k}(cc14{k}); end
 % for k=1:G;     plot_miss{k} = miss_rate{k}; end
 
 

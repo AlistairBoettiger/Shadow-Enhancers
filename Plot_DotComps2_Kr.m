@@ -210,10 +210,10 @@ plot_miss = cell(1,G);
 % colordef black; set(gcf,'color','k');
 colordef white; set(gcf,'color','w');
 
-x = linspace(0,1,25);  % range and number of bins for histogram
+x = linspace(0,1,15);  % range and number of bins for histogram
 xx = linspace(0,1,100); % range a number of bins for interpolated distribution
  method = 'pcubic'; % method for interpolation
-sigma = .2;  % smoothing factor for interpolation
+sigma = .05;  % smoothing factor for interpolation
 y = CompDist(plot_miss,x,xx,method,sigma,names,xlab,14);
 
 for k=1:G
@@ -225,6 +225,12 @@ title('cc14 embryos');
 
 xlab = 'fraction of ectopic on nuclei';
 
+
+ranksum(plot_miss{1},plot_miss{2})
+
+ranksum(plot_miss{1},plot_miss{3})
+
+ranksum(plot_miss{3},plot_miss{2})
 
 
 

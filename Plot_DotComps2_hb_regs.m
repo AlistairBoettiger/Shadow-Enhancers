@@ -5,7 +5,7 @@
 %
 % Alistair Boettiger                                   Date Begun: 03/05/10
 % Levine Lab                                     Functional Since: 03/06/10
-%                                                   Last Modified: 12/09/10
+%                                                   Last Modified: 12/15/10
 
 %% Description
 % comparison
@@ -22,7 +22,8 @@
 % Modified 11/19 added more statistical signficance testing lines.  
 % Modified 12/09 to fix merge data error and to streamline region
 % processing.  
-% Modified to save data
+% Modified to save data 12/14
+% Modified 12/15 to add additional output: compare center vs boundary
 %% Source Code
 clear all;
 
@@ -137,7 +138,7 @@ end
 
 close all; 
 
-save hb_SDreg_12-15-10
+% save hb_SDreg_12-15-10
 
 
 %%

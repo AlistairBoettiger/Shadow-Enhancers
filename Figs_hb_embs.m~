@@ -9,10 +9,103 @@ clear all
 
 fout = '/Users/alistair/Documents/Berkeley/Levine_Lab/Projects/Shadow Enhancers/Results/';
 
+folder =  '/Volumes/Data/Lab Data/Shadow_data/Processed/';
+edat =  'MP09_22C_y_hb12_data.mat'; % cc13  11
+load([folder,edat]); 
+
+       age = getage(H,cent)     
+
+figure(1); clf; imshow(handles.It); 
+ hold on; plot(bndrys1{1}(:,1),bndrys1{1}(:,2),'g');
+
+ N = length(ptr_nucin1);
+ c1 = ptr_nucin1(rand(1,N)<.9);
+  On1 = ismember(H,c1);
+ 
+  c2 = ptr_nucin1(rand(1,N)<.9);
+  On2 = ismember(H,c2);
+ 
+  
+  
+       Iz = uint8(zeros(h,w,3));
+     Iz(:,:,1) = 250*uint8(On1);
+     Iz(:,:,2) =  250*uint8(On1) + .9*handles.In;% - 255*uint8(Ec);
+     Iz(:,:,3) = .9*handles.In;  
+     Im1 = uint8(bsxfun(@times,double(Iz)/215,double(handles.In)));
+     Im1 = imflip(imflip(Im1,2),1);
+     
+     Iz = uint8(zeros(h,w,3));
+     Iz(:,:,1) = 250*uint8(On2);
+     Iz(:,:,2) =  250*uint8(On2) + .9*handles.In;% - 255*uint8(Ec);
+     Iz(:,:,3) = .9*handles.In;  
+     Im2 = uint8(bsxfun(@times,double(Iz)/215,double(handles.In)));
+     Im2 = imflip(imflip(Im2,2),1);
+          
+     Iz = uint8(zeros(h,w,3));
+     Iz(:,:,1) = 250*uint8(On1) + 250*uint8(On2);
+     Iz(:,:,2) =  250*uint8(On1) + 250*uint8(On2) + .9*handles.In;% - 255*uint8(Ec);
+     Iz(:,:,3) = .9*handles.In;  
+     Im3 = uint8(bsxfun(@times,double(Iz)/215,double(handles.In)));
+     Im3 = imflip(imflip(Im3,2),1); 
+     
+     figure(1); clf; subplot(3,1,1); imshow(Im1); 
+     subplot(3,1,2); imshow(Im2);
+     subplot(3,1,3); imshow(Im3); 
+     set(gcf,'color','k');
+     
+     imwrite(Im1,[fout,'schema1.tif'],'tif');
+     imwrite(Im2,[fout,'schema2.tif'],'tif');
+     imwrite(Im3,[fout,'schema3.tif'],'tif');
+     
+
+%
+
+
+%% Illustrating Definition of 'Fraction Missed'
+folder =  '/Volumes/Data/Lab Data/Shadow_data/Processed/';
+edat =  'MP09_22C_y_hb12_data.mat'; % cc13  11
+load([folder,edat]); 
+
+       age = getage(H,cent)     
+
+figure(1); clf; imshow(handles.It); 
+
+
+Nuc_intensity = .7; 
+
+
+I = handles.It;  
+
+C = [1,1,0;
+    1,0,0;
+    0,.45,.45];
+
+T = [.13,.6;
+    .12,.5;
+    .2,1];
+
+f = [0,0];
+
+I = im_recolor(I,C,T,f) ;
+% figure(1); clf; imshow(I);
+% hold on; plot(bndrys2{1}(:,1),bndrys2{1}(:,2),'g');
+
+
+  Iz = uint8(zeros(h,w,3));
+    Iz(:,:,1) = imadd(uint8(255*Reg1.*L2n1a.*Cell_bnd),I(:,:,1)) ;
+    Iz(:,:,2) =  imadd(uint8(255*Reg1.*L2n1a.*Cell_bnd),1*I(:,:,2)); % imadd(uint8(255*Cell_bnd),1*handles.Im2);  %
+    Iz(:,:,3) =    imadd(uint8(255*Reg1.*L2n1a.*Cell_bnd),I(:,:,3)) -handles.It(:,:,1)- .2*handles.It(:,:,2) ;
+    % DI = uint8(bsxfun(@times,double(Io)/255,double(handles.In)));
+ h = figure(1);  clf; imshow(Iz); hold on;
+hold on; plot(bndrys2{1}(:,1),bndrys2{1}(:,2),'g');
+
+saveas(h,[fout,'explain_cnt.tif'],'tif');
 
 
 
-%% Boundary vs. central region comparison for cycle 13 embryos
+
+
+%% Boundary vs. central region comparison for cycle 14 embryos
 clear all;
 fout = '/Users/alistair/Documents/Berkeley/Levine_Lab/Projects/Shadow Enhancers/Results/';
 folder =  '/Volumes/Data/Lab Data/Shadow_data/Processed/';
