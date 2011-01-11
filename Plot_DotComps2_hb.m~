@@ -168,11 +168,15 @@ save hb_SD-12-09-10
  foff{2} = miss_rate{7};  Nnuc{2} = nd{7}; % 2 enhancer 30C
  
  foff{3} = [miss_rate{2}; miss_rate{9}];  Nnuc{3} = [nd{2}; nd{9}]; % no shadow 22C
-  
+ %foff{3} = [miss_rate{2}];  Nnuc{3} = [nd{2}]; % no shadow 22C
+ 
+ 
  foff{4} = [miss_rate{3}; miss_rate{4}; miss_rate{12}];  Nnuc{4} = [nd{3}; nd{4}; nd{12}]; % no shadow 30C
  
  foff{5} = [miss_rate{5}; miss_rate{10}];  Nnuc{5} = [nd{5}; nd{10}]; % no primary 22C
+ %foff{5} = [miss_rate{5}];  Nnuc{5} = [nd{5}]; % no primary 22C
 
+ 
  foff{6} = [miss_rate{8}; miss_rate{11}];  Nnuc{6} = [nd{8}; nd{11}]; % no primary 30C
  
  G = length(foff);
@@ -229,6 +233,10 @@ xlab = 'fraction of missed nuclei';
 F = 12; % FontSize; 
 ymax = .02; pts = 1000;
 xmax = 1;
+labs = {'30C','22C'};
+
+co = [1,3,5]; ho = [2,4,6];
+
 
 plot_miss = cell(1,G); 
  for k=1:G;     plot_miss{k} = foff{k}(cc14{k}); end
@@ -240,13 +248,21 @@ colordef white; set(gcf,'color','w');
 x = linspace(0,1,15);  % range and number of bins for histogram
 xx = linspace(0,1,pts); % range a number of bins for interpolated distribution
  method = 'pcubic'; % method for interpolation
-sigma = .01;  % smoothing factor for interpolation
-CompDist(plot_miss,x,xx,method,sigma,names,xlab,F)
+sigma = .1;  % smoothing factor for interpolation
+
+CompDist(plot_miss(co),x,xx,method,sigma,names(co),xlab,F);
 ylim([0,.5*ymax]); title('Early cc14');
 xlim([0,xmax]);
 
+figure(32); clf; subplot(3,1,1);
+colordef white; set(gcf,'color','w');
+CompDist(plot_miss(ho),x,xx,method,sigma,names(ho),xlab,F);
+ylim([0,.5*ymax]); title('Early cc14');
+xlim([0,xmax]);
+
+
 figure(30); clf;  subplot(3,1,1); 
-BoxDist(plot_miss,names,'fraction missed');
+BoxDist(plot_miss,names,'fraction missed',labs);
 xlim([0,1]);
 
 
@@ -256,43 +272,59 @@ plot_miss = cell(1,G);
  for k=1:G;     plot_miss{k} = foff{k}(cc13{k}); end
 
 figure(33); subplot(3,1,2);
-colordef white; set(gcf,'color','w');
-
-x = linspace(0,1,40);  % range and number of bins for histogram
+figure(5); clf;
+x = linspace(0,1,30);  % range and number of bins for histogram
 xx = linspace(0,1,pts); % range a number of bins for interpolated distribution
- method = 'pcubic'; % method for interpolation
-sigma = .05;  % smoothing factor for interpolation
-CompDist(plot_miss,x,xx,method,sigma,names,xlab,F)
+ method ='spline'; %'linear';% 'nearest'; % 'pcubic'; % method for interpolation
+sigma = .2;  % smoothing factor for interpolation
+CompDist(plot_miss(co),x,xx,method,sigma,names(co),xlab,F)
+ylim([0,ymax]); title('cc13');
+xlim([0,xmax]);
+cc13_22Cstats = [nanmedian(plot_miss{1}), nanmedian(plot_miss{3}), nanmedian(plot_miss{5})];
+cc13_30Cstats = [nanmedian(plot_miss{2}), nanmedian(plot_miss{4}), nanmedian(plot_miss{6})];
+cc13_22Cstats,
+cc13_30Cstats
+
+figure(32); subplot(3,1,2); 
+
+figure(4); clf;
+CompDist(plot_miss(ho),x,xx,method,sigma,names(ho),xlab,F);
 ylim([0,ymax]); title('cc13');
 xlim([0,xmax]);
 
-
 figure(30); subplot(3,1,2); 
-BoxDist(plot_miss,names,'fraction missed');
+BoxDist(plot_miss,names,'fraction missed',labs);
 xlim([0,1]);
 
 %~~~~ Plot Fraction of missing nuclei distributions ~~~~~
-
+%
 plot_miss = cell(1,G); % k = 10;
- for k=1:G;     plot_miss{k} = foff{k}(cc12{k}|cc11{k} ); end
-
+% for k=1:G;     plot_miss{k} = foff{k}(cc12{k}|cc11{k} ); end
+% for k=1:G;     plot_miss{k} = foff{k}(cc11{k} ); end
+  for k=1:G;     plot_miss{k} = foff{k}(cc12{k} ); end
 
  figure(33); subplot(3,1,3); % figure(2); clf; 
 colordef white; set(gcf,'color','w');
 
-x = linspace(0,1,12);  % range and number of bins for histogram
+x = linspace(0,1,10);  % range and number of bins for histogram
 xx = linspace(0,1,pts); % range a number of bins for interpolated distribution
  method = 'pcubic'; % method for interpolation
-sigma = .05;  % smoothing factor for interpolation
-CompDist(plot_miss,x,xx,method,sigma,names,xlab,F)
-ylim([0,.5*ymax]);  title('cc11 & 12');
+sigma = .15;  % smoothing factor for interpolation
+CompDist(plot_miss(co),x,xx,method,sigma,names(co),xlab,F)
+ylim([0,.3*ymax]);  title('cc11 & 12');
+xlim([0,xmax]);
+
+
+figure(32); subplot(3,1,3); colormap(hot);  
+CompDist(plot_miss(ho),x,xx,method,sigma,names(ho),xlab,F)
+ylim([0,.3*ymax]); title('cc11 & 12');
 xlim([0,xmax]);
 
 %
 
 
 figure(30); subplot(3,1,3); 
-BoxDist(plot_miss,names,'fraction missed');
+BoxDist(plot_miss,names,'fraction missed',labs);
 xlim([0,1]);
 
 
@@ -337,7 +369,7 @@ xlab = 'fraction of ectopic on nuclei';
 
 
 plot_miss = cell(1,G); 
- for k=1:G;     plot_miss{k} = ectop_rate{k}(cc12{k}|cc11{k}); end
+ for k=1:G;     plot_miss{k} = ectop_rate{k}(cc12{k} | cc11{k}); end
 % for k=1:G;     plot_miss{k} = miss_rate{k}; end
 
 
