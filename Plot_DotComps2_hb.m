@@ -132,11 +132,6 @@ save hb_SD-12-09-10
 
  % clear all; load hb_SD-10-21-10;
   %1 +6, 2+9, 3+4, 
-  
-
-%    [miss_cnt,miss_rate,nd,ectop_rate] = merge_data(2,9,N,miss_cnt,miss_rate,nd, ectop_rate);
-%       [miss_cnt,miss_rate,nd,ectop_rate] = merge_data(1,7,N,miss_cnt,miss_rate,nd, ectop_rate);
-%   [miss_cnt,miss_rate,nd,ectop_rate] = merge_data(3,4,N,miss_cnt,miss_rate,nd, ectop_rate);
 
 
 %%
@@ -231,7 +226,7 @@ end
 
 xlab = 'fraction of missed nuclei';
 F = 12; % FontSize; 
-ymax = .02; pts = 1000;
+ymax = .5; pts = 1000;
 xmax = 1;
 labs = {'30C','22C'};
 
@@ -276,10 +271,14 @@ figure(5); clf;
 x = linspace(0,1,30);  % range and number of bins for histogram
 xx = linspace(0,1,pts); % range a number of bins for interpolated distribution
  method ='spline'; %'linear';% 'nearest'; % 'pcubic'; % method for interpolation
-sigma = .2;  % smoothing factor for interpolation
+sigma = .1; %.2 % smoothing factor for interpolation
 CompDist(plot_miss(co),x,xx,method,sigma,names(co),xlab,F)
 ylim([0,ymax]); title('cc13');
 xlim([0,xmax]);
+
+set(gcf,'color','k'); 
+
+
 cc13_22Cstats = [nanmedian(plot_miss{1}), nanmedian(plot_miss{3}), nanmedian(plot_miss{5})];
 cc13_30Cstats = [nanmedian(plot_miss{2}), nanmedian(plot_miss{4}), nanmedian(plot_miss{6})];
 cc13_22Cstats,

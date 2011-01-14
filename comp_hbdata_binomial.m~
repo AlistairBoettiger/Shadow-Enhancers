@@ -44,58 +44,66 @@ set(gcf,'color','w');
 
 V = 200; % number of concentration points to check
 time = 20 ; % min in cell cylce
-Ts = time*60/10; % number of time points to check
+stp = 20; 
+Ts = time*60/stp; % number of time points to check
 
 
 D = 4.5;% diffusion rate of bcd (according to Dostatni)
 cG = 4.8; % c Gregor
-
-  N = 500;
+N = 50;
 
 C = linspace(2,7,V);  % range of concentrations to explore; 
-      Th = 1:1000; % range of thresholds number of molecules to explore
+Th = 1:1000; % range of thresholds number of molecules to explore
       
-    low = cG-cG*.1; % 10% less than threshold bcd concentration
-    high = cG + cG*.1; % 10% more than threshold bcd concentration
+low = cG-cG*.1; % 10% less than threshold bcd concentration
+high = cG + cG*.1; % 10% more than threshold bcd concentration
 
-    miss_rate = zeros(1,Ts); 
+miss_rate = zeros(1,Ts); 
 
- figure(4); clf;   
+figure(4); clf;   
 ploop = [.22, .13, .22*.13]; col = {'blue','green','red'}; 
 a_effs = [.03, .05, .03+.05]/1.9; 
 
+bf = zeros(Ts,N+1);
+
 for e = 1:3; 
-    a = a_effs(e); % effective enhancer size
-    
+    a = a_effs(e); % effective enhancer size   
     for t = 1:Ts
-        T = t*10;% 7*60;
-         phalf = 1-gammainc(a*cG*D*T,floor(Th),'upper');
+        T = t*stp;% T = 1*60;
+         phalf = gammainc(a*cG*D*T,floor(Th),'lower');  % 1 - upper is lower
          [err,thresh] = min( abs(phalf - .5) );
          pint =  1-gammainc(a*C*D*T,floor(thresh),'upper');
         [err,cut] = min( abs(C - low));  % find where lines intersect
-        miss_rate(t) = pint(cut); 
-       
+        miss_rate(t) = pint(cut);       
         
-%         figure(1); clf; plot(C,pint); hold on; plot([low,low],[0,1],'c');
+%         figure(1); clf; plot(C,pint,'linewidth',2); hold on; 
+%         plot([low,low],[0,1],'c');
 %         hold on; plot([high,high],[0,1],'r');
 %         figure(1); hold on; plot([C(cut)], [pint(cut)],'r.')
-    end
+%         
+%         vert = [C(1:cut)',pint(1:cut)'];  vert = [vert; C(cut),0;0,0];
+%         fac = [1:cut+2];
+%         
+%         patch('Faces',fac,'Vertices',vert,'Facecolor',[0,.5,1]);
+%         alpha(.7);
+        
+ %   end
 
 %     figure(2); clf; plot(miss_rate, 'k.'); 
 %     bvar = N*miss_rate.*(1-miss_rate);
 %     figure(2); clf; plot(bvar); 
 %     figure(3); clf; hist(miss_rate,0:.01:1); xlim([0,1]);
 
-  
-    bf = zeros(Ts,N+1);
-
-
-
+ 
     
-    for t=1:Ts
-        bf(t,:) = binopdf(0:1:N,N,1-(1-miss_rate(t))*(1-ploop(e) ) );
+   % for t=1:Ts
+        bf(t,:) = binopdf(0:1:N,N,1-(1-miss_rate(t))*(1-ploop(e) )   );  % binopdf(0:1:N,N,1-(1-miss_rate(t))*(1-ploop(e) ) );
     end
 
+    ns = floor(logspace(0,log10(Ts),10));
+    figure(1); clf; plot(bf(ns,:)','r');
+    set(gcf,'color','k');
+    
     xbf = linspace(0,1,N+1);
     bfD = sum(bf);
     bfD = bfD/sum(bfD)*N;

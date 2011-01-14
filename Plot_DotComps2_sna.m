@@ -1,18 +1,20 @@
-%%                          Plot_DotComps.m                             %%
+%%                          Plot_DotComps2_sna.m                         %%
 %
 % Analyzing New Shadow data
 %
 %
 % Alistair Boettiger                                   Date Begun: 03/05/10
 % Levine Lab                                     Functional Since: 03/06/10
-%                                                   Last Modified: 03/17/10
+%                                                   Last Modified: 01/12/11
 
 %% Description
 % comparison
 %
 %
 %% Updates
-
+% Revised 01/12/11 to use most recent  formulation of age structure and
+% plotting tools.  
+% Really should make this into a function
 
 %% Source Code
 clear all;
@@ -32,15 +34,6 @@ emb_roots = {'MP05_29C_y_sna'; % 1
     'MP10xdl6_25C_pt1';        % 11 
     'MP10xdl6_25C_pt2'};       % 12
           
-
-names = {'no primary, 30C';
-    'no primary, 22C';
-    'no shadow, 30C';
-    'no shadow 22C'; 
-    '2 enhancers, 30C';
-    '2 enhancers, 22C';
-    'no primary, dl^6';
-    '2 enhancers, dl^6'};
 
 
 N = 70;
@@ -78,7 +71,7 @@ for z=1:K % k=2;
        % s29_miss_cnt(n) =  length(intersect(setdiff(pts2,pts1), ptr_nucin2));
            miss_cnt{z}(n) =  length(intersect(setdiff(pts2,pts1), ptr_nucin2));  
            miss_rate{z}(n) = miss_cnt{z}(n)/length(pts2); 
-           lowon{z}(n) = lowon_fxn(H,handles,nin2,ptr_nucin2,emb); 
+           lowon{z}(n) = lowon_fxn(H,handles,nin2,ptr_nucin2,emb,0); 
            %lowon{z}(n) = lowon_fxn(H,handles,all_nucs,pts2,nin2,Cell_bnd);  
           
            if length(H) > 2000
@@ -88,7 +81,7 @@ for z=1:K % k=2;
            end
                
            lims =  round([xmin,xmax,ymin,ymax]*im_dim); 
-           nd{z}(n) = NucDensity(cent,lims);
+           nd{z}(n) = NucDensity(cent,lims,0);
 
         catch ME
             disp(ME.message); 
@@ -97,29 +90,83 @@ for z=1:K % k=2;
     end
 end
 
-save snail_shadow_data
-[miss_cnt,miss_rate,nd,lowon] = merge_data(11,12,N,miss_cnt,miss_rate,nd,lowon);
-[miss_cnt,miss_rate,nd,lowon] = merge_data(9,10,N,miss_cnt,miss_rate,nd,lowon);
-[miss_cnt,miss_rate,nd,lowon] = merge_data(5,8,N,miss_cnt,miss_rate,nd,lowon);
-[miss_cnt,miss_rate,nd,lowon] = merge_data(1,7,N,miss_cnt,miss_rate,nd,lowon);
+save snail_SD_011211
+
 
 
 
 
 %%
- % clear all; load snail_shadow_data;
 
-ND = cell2mat(nd); 
-figure(1); clf;
-plot( log2(sort(ND(:))) ,'r.');
+
+foff{1} = miss_rate{6};                 Nnuc{1} = nd{6}; % 2 enh 22 C, MP10
+foff{2} = [miss_rate{5},miss_rate{8}];  Nnuc{2} = [nd{5},nd{8}]; % 2 enh 30C MP10
+foff{3} = miss_rate{2};                 Nnuc{3} = nd{2}; % MP05 22C 
+foff{4} = [miss_rate{1}; miss_rate{7}]; Nnuc{4} = [nd{1}, nd{7}]; % MP05 30C
+foff{5} = miss_rate{4};                 Nnuc{5} = nd{4};  % MP06 22C
+foff{6} = miss_rate{3};                 Nnuc{6} = nd{3};  % MP06 30C
+foff{7} = [miss_rate{11},miss_rate{12}]; Nnuc{7} = [nd{11}, nd{12}];% MP10 dl6 25C
+foff{8} = [miss_rate{9},miss_rate{10}]; Nnuc{8} = [nd{9},nd{10}]; % MP05 dl6 25C
+
+ 
+ for k=1:G
+    data = nonzeros(foff{k});
+    foff{k} = [data; zeros(200-length(data),1)];
+    data = nonzeros(Nnuc{k});
+    Nnuc{k} = [data; zeros(200-length(data),1)];
+ end
+
+ names = {'2 enh 22C';
+          '2 enh 30C';
+          'no primary 22C';
+          'no primary 30C';
+          'no shadow 22C';
+          'no shadow 30C';
+          '2 enh dl6';
+          'no primary dl6'};
+ 
+% 
+% 
+% emb_roots = {'MP05_29C_y_sna'; % 1
+%     'MP05_22C_y_sna';          % 2
+%     'MP06xYW_30C_y_sna';       % 3
+%     'MP06xYW_22C_y_sna';       % 4
+%     'MP10_29C_y_sna';          % 5
+%     'MP10_22C_y_sna';          % 6
+%     'MP05xYW_30C_sna_y-full';  % 7
+%     'MP10xYW_30C_sna_y-full';  % 8
+%     'MP05xdl6_25C_pt1';        % 9
+%     'MP05xdl6_25C_pt2';        % 10
+%     'MP10xdl6_25C_pt1';        % 11 
+%     'MP10xdl6_25C_pt2'};       % 12
+
 %%
-cc14 =cell(1,G); cc13 = cell(1,G); cc12 = cell(1,G); 
+
+ND = cell2mat(Nnuc); 
+age_offset = 5.3;
+
+emb_cycle = age_offset + log2( nonzeros( sort(ND(:)) ) );
+figure(2); clf; plot( emb_cycle ,'r.');
+
+
+title(['sna embryos, N = ',num2str(length(nonzeros(ND(:))) )  ],'FontSize',15);
+set(gca,'FontSize',15); grid on;
+set(gcf,'color','w'); ylabel('log_2(nuc density)');  xlabel('embryo number'); 
+ylim([10,14.99]);
+
+
+%%
+G= length(names);
+cc14 =cell(1,G); cc13 = cell(1,G); cc12 = cell(1,G); cc11 = cell(1,G); cc10 = cell(1,G); cc9 = cell(1,G); 
 for z=1:G
-    cc14{z} = log2(ND(:,z))>8;
-    cc13{z} = log2(ND(:,z))<8 & log2(ND(:,z))>7;
-    cc12{z} = log2(ND(:,z))<7;
+    logage =   age_offset + log2( ND(:,z) );
+    
+    cc14{z} = logage >14;
+    cc13{z} = logage <14  & logage> 13;
+    cc12{z}  = logage <13 & logage > 12;
+    cc11{z} = logage <12 & logage > 0 ;
+    foff{z}(foff{z}==Inf) = 0; 
 end
-
 
 %% Plot Fraction of missing nuclei distributions
 
@@ -127,7 +174,7 @@ xlab = 'fraction of missed nuclei';
 
 
 plot_miss = cell(1,G); 
-for k=1:G;     plot_miss{k} = miss_rate{k}(cc14{k}); end
+for k=1:G;     plot_miss{k} = foff{k}(cc14{k}); end
 %for k=1:G;     plot_miss{k} = miss_rate{k}; end
 
 
@@ -135,11 +182,29 @@ for k=1:G;     plot_miss{k} = miss_rate{k}(cc14{k}); end
 % colordef black; set(gcf,'color','k');
 colordef white; set(gcf,'color','w');
 
-x = linspace(0,1,10);  % range and number of bins for histogram
+x = linspace(0,1,30);  % range and number of bins for histogram
 xx = linspace(0,1,100); % range a number of bins for interpolated distribution
  method = 'pcubic'; % method for interpolation
 sigma = .1;  % smoothing factor for interpolation
-CompDist(plot_miss,x,xx,method,sigma,names,xlab)
+CompDist(plot_miss,x,xx,method,sigma,names,xlab,12)
+
+labs = {'30C','22C'};
+figure(30); clf;  
+BoxDist(plot_miss,names,'fraction missed',labs);
+xlim([0,1]);
+
+%%  Compare to bionmial
+
+N = 700; % estimate of number of cells
+
+for k=1:G
+    mu(k) = mean(plot_miss{k});
+    sig(k) = std(plot_miss{k});
+    bisig(k) = sqrt( mu(k)*N*(1-mu(k)) )/N;
+end
+
+figure(3); clf;
+scatter(sig,bisig);
 
 
 
