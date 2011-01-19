@@ -157,8 +157,8 @@ plot_miss = cell(1,G);
 
 
  figure(1); clf;
-% colordef black; set(gcf,'color','k');
-colordef white; set(gcf,'color','w');
+ colordef black; set(gcf,'color','k');
+%colordef white; set(gcf,'color','w');
 
 x = linspace(0,1,8);  % range and number of bins for histogram
 xx = linspace(0,1,100); % range a number of bins for interpolated distribution

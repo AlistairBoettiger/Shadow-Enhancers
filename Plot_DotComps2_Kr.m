@@ -109,7 +109,7 @@ close all;
 
 
 %%
- % clear all; load kr_LacZ_data_ect;
+  clear all; load kr_LacZ_data_ect;
 ND = cell2mat(nd); 
 
 emb_cycle = 4.8 + log2( nonzeros( sort(ND(:)) ) );
@@ -140,14 +140,20 @@ end
 xlab = 'fraction of missed nuclei';
 
 
+
+names = {'Kr 2 enhancers, 22C';
+         'Kr CD1, 22C';
+         'Kr CD2, 22C'
+         };
+
 plot_miss = cell(1,G); 
  for k=1:G;     plot_miss{k} = miss_rate{k}(cc14{k}); end
 % for k=1:G;     plot_miss{k} = miss_rate{k}; end
 
 
  figure(1); clf;
-% colordef black; set(gcf,'color','k');
-colordef white; set(gcf,'color','w');
+colordef black; set(gcf,'color','k');
+% colordef white; set(gcf,'color','w');
 
 x = linspace(0,1,10);  % range and number of bins for histogram
 xx = linspace(0,1,100); % range a number of bins for interpolated distribution

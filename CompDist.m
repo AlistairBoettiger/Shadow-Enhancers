@@ -44,6 +44,7 @@ N_var = cellfun(@sum,var_hist,'UniformOutput',false);
 dist_var = cellfun(@hist2dist,var_hist,X,XX,M,S,'UniformOutput',false);
 
 
+
 C = hsv(G);
 legend_labels = cell(1,G);
 for k=1:G

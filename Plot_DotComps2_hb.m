@@ -298,9 +298,9 @@ xlim([0,1]);
 %~~~~ Plot Fraction of missing nuclei distributions ~~~~~
 %
 plot_miss = cell(1,G); % k = 10;
-% for k=1:G;     plot_miss{k} = foff{k}(cc12{k}|cc11{k} ); end
+ for k=1:G;     plot_miss{k} = foff{k}(cc12{k}|cc11{k} ); end
 % for k=1:G;     plot_miss{k} = foff{k}(cc11{k} ); end
-  for k=1:G;     plot_miss{k} = foff{k}(cc12{k} ); end
+ % for k=1:G;     plot_miss{k} = foff{k}(cc12{k} ); end
 
  figure(33); subplot(3,1,3); % figure(2); clf; 
 colordef white; set(gcf,'color','w');
@@ -325,6 +325,43 @@ xlim([0,xmax]);
 figure(30); subplot(3,1,3); 
 BoxDist(plot_miss,names,'fraction missed',labs);
 xlim([0,1]);
+%% For FIGURE
+F =10; 
+plot_miss = cell(1,G); 
+ for k=1:G;     plot_miss{k} = foff{k}(cc13{k}); end
+
+figure(2); clf;
+
+colordef black;
+set(gcf,'color','k');
+
+
+subplot(2,1,1);  hold on;
+x = linspace(0,1,30);  % range and number of bins for histogram
+xx = linspace(0,1,pts); % range a number of bins for interpolated distribution
+ method ='spline'; %'linear';% 'nearest'; % 'pcubic'; % method for interpolation
+sigma = .1; %.2 % smoothing factor for interpolation
+CompDist(plot_miss(co),x,xx,method,sigma,names(co),xlab,F)
+ title('cc13');
+
+
+
+
+ for k=1:G;     
+     temp = foff{k}(cc12{k}|cc11{k} );
+     temp(temp>.7) = NaN;
+     plot_miss{k} = temp;
+ 
+ end
+ 
+ 
+figure(2); subplot(2,1,2); 
+x = linspace(0,1,15);  % range and number of bins for histogram
+xx = linspace(0,1,pts); % range a number of bins for interpolated distribution
+ method ='pcubic';% 'pcubic'; % method for interpolation
+sigma = .05;  % smoothing factor for interpolation
+CompDist(plot_miss(co),x,xx,method,sigma,names(co),xlab,F)
+
 
 
 

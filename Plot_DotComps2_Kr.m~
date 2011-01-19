@@ -109,7 +109,7 @@ close all;
 
 
 %%
- % clear all; load kr_LacZ_data_ect;
+  clear all; load kr_LacZ_data_ect;
 ND = cell2mat(nd); 
 
 emb_cycle = 4.8 + log2( nonzeros( sort(ND(:)) ) );

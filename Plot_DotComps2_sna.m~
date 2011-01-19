@@ -35,7 +35,15 @@ emb_roots = {'MP05_29C_y_sna'; % 1
     'MP10xdl6_25C_pt2'};       % 12
           
 
-
+ names = {'2 enh 22C';
+          '2 enh 30C';
+          'no primary 22C';
+          'no primary 30C';
+          'no shadow 22C';
+          'no shadow 30C';
+          '2 enh dl6';
+          'no primary dl6'};
+ 
 N = 70;
 K = length(emb_roots); 
 G= length(names);
@@ -90,14 +98,14 @@ for z=1:K % k=2;
     end
 end
 
-save snail_SD_011211
+ % save snail_SD_011211
 
 
 
 
 
-%%
-
+%% 
+% clear all;  load snail_SD_012111
 
 foff{1} = miss_rate{6};                 Nnuc{1} = nd{6}; % 2 enh 22 C, MP10
 foff{2} = [miss_rate{5},miss_rate{8}];  Nnuc{2} = [nd{5},nd{8}]; % 2 enh 30C MP10
@@ -172,6 +180,15 @@ end
 
 xlab = 'fraction of missed nuclei';
 
+ names = {'2 enh 22C';
+          '2 enh 30C';
+          'no primary 22C';
+          'no primary 30C';
+          'no shadow 22C';
+          'no shadow 30C';
+          '2 enh dl6';
+          'no primary dl6'};
+
 
 plot_miss = cell(1,G); 
 for k=1:G;     plot_miss{k} = foff{k}(cc14{k}); end
@@ -179,14 +196,21 @@ for k=1:G;     plot_miss{k} = foff{k}(cc14{k}); end
 
 
  figure(1); clf;
-% colordef black; set(gcf,'color','k');
-colordef white; set(gcf,'color','w');
+ colordef black; set(gcf,'color','k');
+%colordef white; set(gcf,'color','w');
 
 x = linspace(0,1,30);  % range and number of bins for histogram
 xx = linspace(0,1,100); % range a number of bins for interpolated distribution
  method = 'pcubic'; % method for interpolation
 sigma = .1;  % smoothing factor for interpolation
-CompDist(plot_miss,x,xx,method,sigma,names,xlab,12)
+subplot(2,1,1);
+CompDist(plot_miss([1,3,5]),x,xx,method,sigma,names([1,3,5]),xlab,12)
+
+subplot(2,1,2);
+sigma = .1; x = linspace(0,1,20);
+CompDist(plot_miss([2,4,6]),x,xx,method,sigma,names([2,4,6]),xlab,12)
+
+
 
 labs = {'30C','22C'};
 figure(30); clf;  
