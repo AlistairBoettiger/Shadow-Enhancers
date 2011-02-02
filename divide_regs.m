@@ -17,6 +17,9 @@
 
 
 function [f1,f2,f3] = divide_regs(L2,H,pts1,pts2,ptr_nucin2,In,dispim)
+
+fout = '/Users/alistair/Documents/Berkeley/Levine_Lab/Projects/Shadow Enhancers/Code_Data/';
+
 %%
 % Get major region
     % Compute region sizes
@@ -109,5 +112,5 @@ f1 = length(onReg1)/length(s1s); % anterior most region
 f2 = length(onReg2)/length(s2s); % middle region
 f3 = length(onReg3)/length(s3s); % boundary
 
-save test2;
+save([fout,'test2']);
 

@@ -5,6 +5,103 @@
  
 clear all
 
+fout = '/Users/alistair/Documents/Berkeley/Levine_Lab/Projects/Shadow Enhancers/Results/';
+
+%%  02-01-11
+% Images for Mike: median embryos showing fraction of missing nuclei is
+% multiplicative
+
+% MP09
+
+folder =  '/Volumes/Data/Lab Data/Shadow_data/Processed/';
+%edat =  'MP09_22C_y_hb12_data.mat'; % cc13  11
+emb = '36';  
+eroot = 'MP09_22C_y_hb';% 11,12,22, 25,  26 27, 28, 31, 36
+
+edat = [eroot,emb,'_data.mat']; % cc13   
+load([folder,edat]); 
+age = getage(H,cent) ;    
+    Ymax = 250;
+    Nstrength = .71;
+    
+     [miss_rate, ptr_nucin2] = anlz_major_reg2(folder,eroot,emb );
+    
+    
+       Iz = uint8(zeros(h,w,3));
+     Iz(:,:,1) = 1*uint8(Ymax*L1)+ 255*uint8(L2n1);
+     Iz(:,:,2) = 1*uint8(Ymax*L1) + Nstrength*handles.In - 255*uint8(L2n1);
+     Iz(:,:,3) = Nstrength*handles.In - Iz(:,:,1);
+     Im_seg09 = uint8(bsxfun(@times,double(Iz)/255,double(handles.In)));
+   
+     Im_seg09 = imflip(Im_seg09,1);
+     Im_seg09 = imresize(Im_seg09,.3); 
+     figure(1); clf; imshow(Im_seg09); title(['MP09 22C, cc',num2str(age),' miss rate ',num2str(miss_rate)]);
+
+
+% MP01
+% eroot = 'BAC01b_22C_y_hb'; % 5,  21   22,30-cc12,  27
+emb = '09';  
+% eroot = 'BAC01b_30C_y_hb';  % 09  10
+eroot = 'MP01_22C_y_hb';% 04  09*  17    cc12: 10-13
+
+edat = [eroot,emb,'_data.mat']; % cc13   
+load([folder,edat]); 
+age = getage(H,cent) ;    
+    Ymax = 250;
+    Nstrength = 2;
+    
+     [miss_rate, ptr_nucin2] = anlz_major_reg2(folder,eroot,emb );
+    
+    
+       Iz = uint8(zeros(h,w,3));
+     Iz(:,:,1) = 1*uint8(Ymax*L1)+ 255*uint8(L2n1);
+     Iz(:,:,2) = 1*uint8(Ymax*L1) + Nstrength*handles.In - 255*uint8(L2n1);
+     Iz(:,:,3) = Nstrength*handles.In - Iz(:,:,1);
+     Im_seg01 = uint8(bsxfun(@times,double(Iz)/255,double(handles.In)));
+     Im_seg01 = imresize(Im_seg01,.3); 
+   
+     Im_seg01 = imflip(Im_seg01,2);
+     figure(2); clf; imshow(Im_seg01); title(['MP01 22C, cc',num2str(age),' miss rate ',num2str(miss_rate)]);
+
+     
+% MP02   
+
+emb = '05';  
+eroot = 'BAC02_22C_y_hb';% 10% = 02   20% =  03*  06   10
+% eroot = 'BAC02_30C_y_hb';
+%eroot = 'MP02_22C_y_hb'; %
+% eroot = 'MP02_30C_LacZ_hb';%
+
+edat = [eroot,emb,'_data.mat']; % cc13   
+load([folder,edat]); 
+age = getage(H,cent) ;    
+    Ymax = 250;
+    Nstrength = 2;
+    
+     [miss_rate, ptr_nucin2] = anlz_major_reg2(folder,eroot,emb );
+    
+    
+       Iz = uint8(zeros(h,w,3));
+     Iz(:,:,1) = 1*uint8(Ymax*L1)+ 255*uint8(L2n1);
+     Iz(:,:,2) = 1*uint8(Ymax*L1) + Nstrength*handles.In - 255*uint8(L2n1);
+     Iz(:,:,3) = Nstrength*handles.In - Iz(:,:,1);
+     Im_seg02 = uint8(bsxfun(@times,double(Iz)/155,double(handles.In)));
+   
+     
+     Im_seg02 = imresize(Im_seg02,.3);
+     Im_seg02 = imflip(Im_seg02,1); 
+     
+     figure(3); clf; imshow(Im_seg02); title(['MP02 22C, cc',num2str(age),' miss rate ',num2str(miss_rate)]);
+     
+          
+           imwrite(Im_seg01,[fout,'Rep_01.tif'],'tif');
+        imwrite(Im_seg02,[fout,'Rep_02.tif'],'tif');
+        imwrite(Im_seg09,[fout,'Rep_09.tif'],'tif');
+     
+     
+     
+     
+%% 2010 images v
 
 
 fout = '/Users/alistair/Documents/Berkeley/Levine_Lab/Projects/Shadow Enhancers/Results/';
