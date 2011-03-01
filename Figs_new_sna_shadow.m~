@@ -39,10 +39,10 @@ ICyO = imadjust(I(:,:,3),[.12,.25] ,[0,1]);
 Iz(:,:,2) = Iz(:,:,2)+ ICyO;
 
 
-Io =  fxnclean_v2(Iz,3,0,30,40,300);    
+Iz = imrotate
 
 
-Io = imresize(Io,.5); 
+Io = imresize(Iz,.5); 
 figure(1); clf; imshow(Io);
 
 

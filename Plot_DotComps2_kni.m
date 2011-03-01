@@ -5,7 +5,7 @@
 %
 % Alistair Boettiger                                   Date Begun: 03/05/10
 % Levine Lab                                     Functional Since: 10/14/10
-%                                                   Last Modified: 10/18/10
+%                                                   Last Modified: 02/28/11
 
 %% Description
 % comparison
@@ -13,6 +13,8 @@
 %
 %% Updates
 % Modified 10/18/10 to also count ectopically active nuclei
+% Modified 02/28/11 to use cityscape and cumulative sum.  
+
 
 %% Source Code
 clear all;
@@ -118,8 +120,13 @@ close all;
 %%
 % clear all; load  kni_LacZ_data_ect;
  %clear all; load  kni_LacZ_data;
+% clear all; load kni_LacZ_data_2;
 
-clear all; load kni_LacZ_data_2;
+     clear all; 
+data_folder = '/Users/alistair/Documents/Berkeley/Levine_Lab/Projects/Shadow Enhancers/Code_Data/';
+load([data_folder,'kni_LacZ_data_2']);
+ 
+
  
 ND = cell2mat(nd); 
 
@@ -144,6 +151,101 @@ for z=1:G
     cc12{z}  = logage <13 & logage > 12;
     cc11{z} = logage <12 ;
 end
+
+%%
+F = 12;
+xlab = 'fraction of missed nuclei';
+
+
+plot_miss = cell(1,G); 
+ for k=1:G;     plot_miss{k} = miss_rate{k}(cc14{k}); end
+
+
+  data = plot_miss;    
+  Ts = length(data);% number of tracks
+  pW = zeros(Ts);
+  pA = zeros(Ts); 
+  for i=1:Ts
+    for j = 1:Ts
+     pW(i,j) = ranksum(data{i},data{j});   % Wilcox Rank Sum
+     pA(i,j)=anovan([data{i}',data{j}'],{[zeros(1,length(data{i})),ones(1,length(data{j}))]},'display','off'); % 2-way ANOVA
+    end
+  end
+ Wpvals = ['p_{12} = ',num2str(pW(1,2),2), '   p_{13} = ',num2str(pW(1,3),2) , '    p_{23} = ',num2str(pW(2,3),2)  ];
+ Apvals = ['p_{12} = ',num2str(pA(1,2),2), '   p_{13} = ',num2str(pA(1,3),2) , '    p_{23} = ',num2str(pA(2,3),2)  ];
+ disp(['pairwise Wilcoxon rank sum:  ', Wpvals]);
+ disp(['2-way ANOVA:  ',Apvals]);
+ 
+ figure(1); clf;
+ cityscape(data,names,xlab,F);
+ 
+ figure(3); clf;
+  cumhist(data,names,xlab,F);
+  title(['pairwise Wilcoxon:  ' Wpvals]);
+  set(gcf,'color','w');
+
+
+
+
+%%  Ectopic expression rate
+
+xlab = 'ectopic expression rate';
+
+plot_miss = cell(1,G); 
+ for k=1:G;     plot_miss{k} = ectop_rate{k}(cc14{k}); end
+  
+ data = plot_miss;
+  Ts = length(data);% number of tracks
+  pW = zeros(Ts);
+  pA = zeros(Ts); 
+  for i=1:Ts
+    for j = 1:Ts
+     pW(i,j) = ranksum(data{i},data{j});   % Wilcox Rank Sum
+     pA(i,j)=anovan([data{i}',data{j}'],{[zeros(1,length(data{i})),ones(1,length(data{j}))]},'display','off'); % 2-way ANOVA
+    end
+  end
+ Wpvals = ['p_{12} = ',num2str(pW(1,2),2), '   p_{13} = ',num2str(pW(1,3),2) , '    p_{23} = ',num2str(pW(2,3),2)  ];
+ Apvals = ['p_{12} = ',num2str(pA(1,2),2), '   p_{13} = ',num2str(pA(1,3),2) , '    p_{23} = ',num2str(pA(2,3),2)  ];
+ disp(['pairwise Wilcoxon rank sum:  ', Wpvals]);
+ disp(['2-way ANOVA:  ',Apvals]);
+ 
+ figure(2); clf;
+ cityscape(data,names,xlab,F);
+ 
+ figure(4); clf;
+  cumhist(data,names,xlab,F);
+  title(['pairwise Wilcoxon:  ' Wpvals]);
+  set(gcf,'color','w');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
