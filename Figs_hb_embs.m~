@@ -22,22 +22,24 @@ edat = [eroot,emb,'_data.mat']; % cc13
 load([folder,edat]); 
 age = getage(H,cent) ;    
     Ymax = 250;
-    Nstrength = .71;
+    Nstrength = .7;
     
      [miss_rate, ptr_nucin2] = anlz_major_reg2(folder,eroot,emb );
     
     
        Iz = uint8(zeros(h,w,3));
-     Iz(:,:,1) = 1*uint8(Ymax*L1)+ 255*uint8(L2n1);
-     Iz(:,:,2) = 1*uint8(Ymax*L1) + Nstrength*handles.In - 255*uint8(L2n1);
+     Iz(:,:,1) = 1*uint8(Ymax*(L1&L2))+ 255*uint8(L2n1);
+     Iz(:,:,2) = 1*uint8(Ymax*(L1&L2)) + Nstrength*handles.In - 255*uint8(L2n1);
      Iz(:,:,3) = Nstrength*handles.In - Iz(:,:,1);
-     Im_seg09 = uint8(bsxfun(@times,double(Iz)/255,double(handles.In)));
+     Im_seg09 = uint8(bsxfun(@times,double(Iz)/205,double(handles.In)));
    
      Im_seg09 = imflip(Im_seg09,1);
      Im_seg09 = imresize(Im_seg09,.3); 
      figure(1); clf; imshow(Im_seg09); title(['MP09 22C, cc',num2str(age),' miss rate ',num2str(miss_rate)]);
+     
+        imwrite(Im_seg09,[fout,'Rep_09h.tif'],'tif');
 
-
+%%
 % MP01
 % eroot = 'BAC01b_22C_y_hb'; % 5,  21   22,30-cc12,  27
 emb = '09';  
@@ -54,8 +56,8 @@ age = getage(H,cent) ;
     
     
        Iz = uint8(zeros(h,w,3));
-     Iz(:,:,1) = 1*uint8(Ymax*L1)+ 255*uint8(L2n1);
-     Iz(:,:,2) = 1*uint8(Ymax*L1) + Nstrength*handles.In - 255*uint8(L2n1);
+     Iz(:,:,1) = 1*uint8(Ymax*(L1&L2))+ 255*uint8(L2n1);
+     Iz(:,:,2) = 1*uint8(Ymax*(L1&L2)) + Nstrength*handles.In - 255*uint8(L2n1);
      Iz(:,:,3) = Nstrength*handles.In - Iz(:,:,1);
      Im_seg01 = uint8(bsxfun(@times,double(Iz)/255,double(handles.In)));
      Im_seg01 = imresize(Im_seg01,.3); 
@@ -82,8 +84,8 @@ age = getage(H,cent) ;
     
     
        Iz = uint8(zeros(h,w,3));
-     Iz(:,:,1) = 1*uint8(Ymax*L1)+ 255*uint8(L2n1);
-     Iz(:,:,2) = 1*uint8(Ymax*L1) + Nstrength*handles.In - 255*uint8(L2n1);
+     Iz(:,:,1) = 1*uint8(Ymax*(L1&L2))+ 255*uint8(L2n1);
+     Iz(:,:,2) = 1*uint8(Ymax*(L1&L2)) + Nstrength*handles.In - 255*uint8(L2n1);
      Iz(:,:,3) = Nstrength*handles.In - Iz(:,:,1);
      Im_seg02 = uint8(bsxfun(@times,double(Iz)/155,double(handles.In)));
    
