@@ -44,14 +44,16 @@ subplot(3,1,3); f = [1,2]; I_MP09 = endVrept(folder,MP09,1.5,.3,f);
 %MP01 = 'BAC01b_22C_y_hb45_data.mat'; %   37
 MP01 = 'BAC01b_30C_y_hb15_data.mat'; % 18  19**  02  ~13   15**
 %MP01 = 'MP01_22C_y_hb09_data.mat'; % cc14  06 07**  08 27
-MP02 = 'MP02_22C_y_hb89_data.mat'; % cc14  44*  51*  42*    52  83  89**
+MP02 = 'MP02_22C_y_hb51_data.mat'; % cc14  44*  51*  42*    52  83  89**
 MP09 = 'BAC09_30C_y_hb16_data.mat'; % cc14  16* ~31 35 43
 %MP09 = 'BAC09_22C_y_hb43_data.mat'; % cc14   ~31 ~35 43**
 
+
+
 figure(1); set(gcf,'color','k');   
- subplot(3,1,1); f = [0,0]; I_MP01 = ShowEctopNuc(folder,MP01,3,.3,f);
- subplot(3,1,2); f = [0,0]; I_MP02 = ShowEctopNuc(folder,MP02,3,.3,f);
-subplot(3,1,3); f = [1,0]; I_MP09 = ShowEctopNuc(folder,MP09,3,.3,f);
+ subplot(3,1,1); f = [0,0]; I_MP01 = ShowEctopNuc(folder,MP01,2.4,.3,f,1);
+ subplot(3,1,2); f = [1,0]; I_MP02 = ShowEctopNuc(folder,MP02,1.8,.3,f,1);
+subplot(3,1,3); f = [1,0]; I_MP09 = ShowEctopNuc(folder,MP09,2.4,.3,f,1);
 
      imwrite(I_MP01,[fout,'MP01_ectop.tif'],'tif');
      imwrite(I_MP02,[fout,'MP02_ectop.tif'],'tif');
@@ -101,12 +103,37 @@ kniI = 'kni_int_22C_LacZ_kni07_data.mat'; % 06~  22  24  02e  04e  07e ~14 16 % 
 kni2x = 'kni_2enh_22C_LacZ_kni16_data.mat';% 16 06 19* ~22  %    % cc13 08   17
   
 figure(2); set(gcf,'color','k');
-subplot(3,1,1); f = [0,2]; Ikni5 = ShowEctopNuc(folder,kni5,2.9,.3,f);
-subplot(3,1,2); f = [0,0]; IkniI = ShowEctopNuc(folder,kniI,1.8,.3,f);
-subplot(3,1,3); f = [0,0]; Ikni2x = ShowEctopNuc(folder,kni2x,3.5,.3,f);
+subplot(3,1,1); f = [0,2]; Ikni5 = ShowEctopNuc(folder,kni5,2.9,.3,f,0);
+subplot(3,1,2); f = [0,0]; IkniI = ShowEctopNuc(folder,kniI,1.8,.3,f,0);
+subplot(3,1,3); f = [0,0]; Ikni2x = ShowEctopNuc(folder,kni2x,3.5,.3,f,0);
 
 %%
      imwrite(Ikni5,[fout,'kni_5p_ectop.tif'],'tif');
      imwrite(IkniI,[fout,'kni_int_ectop.tif'],'tif');
      imwrite(Ikni2x,[fout,'kni_2enh_ectop.tif'],'tif');
 %-------------------------------------------------------------------------%
+
+
+
+
+
+
+%% ----------------- Analyze Ectopic Nuclei Kr ------------------------ %%
+kr1 = 'krCD1_22C_LacZ_kr06_data.mat'; % 06* 08~   04  ~17  18
+kr2 = 'krCD2_22C_LacZ_kr01_data.mat'; %  01* 12* , 19*, 21~, 22  13
+kr2x = 'kr2enh_22C_LacZ_kr09_data.mat';% 09  08 10 14
+
+
+figure(1); set(gcf,'color','k');  title('Kr'); 
+subplot(3,1,1); f = [0,2]; Ikr1 = ShowEctopNuc(folder,kr1,1.9,.3,f,0);
+subplot(3,1,2); f = [1,2]; Ikr2 = ShowEctopNuc(folder,kr2,1.9,.3,f,0);
+subplot(3,1,3); f = [1,2]; Ikr2x = ShowEctopNuc(folder,kr2x,1.5,.3,f,0);
+
+imwrite(Ikr1,[fout,'KrCD1_ectop.tif'],'tif');
+imwrite(Ikr2,[fout,'KrCD2_ectop.tif'],'tif');
+imwrite(Ikr2x,[fout,'Kr_2enh_ectop.tif'],'tif');
+
+
+
+
+

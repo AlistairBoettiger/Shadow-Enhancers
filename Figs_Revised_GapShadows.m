@@ -112,3 +112,28 @@ subplot(3,1,3); f = [0,0]; Ikni2x = ShowEctopNuc(folder,kni2x,3.5,.3,f,0);
      imwrite(IkniI,[fout,'kni_int_ectop.tif'],'tif');
      imwrite(Ikni2x,[fout,'kni_2enh_ectop.tif'],'tif');
 %-------------------------------------------------------------------------%
+
+
+
+
+
+
+%% ----------------- Analyze Ectopic Nuclei Kr ------------------------ %%
+kr1 = 'krCD1_22C_LacZ_kr06_data.mat'; % 06* 08~   04  ~17  18
+kr2 = 'krCD2_22C_LacZ_kr01_data.mat'; %  01* 12* , 19*, 21~, 22  13
+kr2x = 'kr2enh_22C_LacZ_kr09_data.mat';% 09  08 10 14
+
+
+figure(1); set(gcf,'color','k');  title('Kr'); 
+subplot(3,1,1); f = [0,2]; Ikr1 = ShowEctopNuc(folder,kr1,1.9,.3,f,0);
+subplot(3,1,2); f = [1,2]; Ikr2 = ShowEctopNuc(folder,kr2,1.9,.3,f,0);
+subplot(3,1,3); f = [1,2]; Ikr2x = ShowEctopNuc(folder,kr2x,1.5,.3,f,0);
+
+imwrite(Ikr1,[fout,'KrCD1_ectop.tif'],'tif');
+imwrite(Ikr2,[fout,'KrCD2_ectop.tif'],'tif');
+imwrite(Ikr2x,[fout,'Kr_2enh_ectop.tif'],'tif');
+
+
+
+
+
