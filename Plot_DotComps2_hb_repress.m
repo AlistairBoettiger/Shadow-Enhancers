@@ -115,8 +115,11 @@ close all;
 
 
 %%
-%  clear all; load hb_SD-12-09-10_repress
+  clear all; % load hb_SD-12-09-10_repress
 
+  data_folder = '/Users/alistair/Documents/Berkeley/Levine_Lab/Projects/Shadow Enhancers/Code_Data/';
+load([data_folder,'hb_SD-12-09-10_repress']);
+  
  % Merge data
  
 %  %
@@ -197,6 +200,76 @@ for z=1:G
     cc11{z} = logage <12 & logage > 0 ;
     foff{z}(foff{z}==Inf) = 0; 
 end
+
+
+
+
+
+
+%% Plot Fraction of missing nuclei distributions
+
+xlab = 'fraction of ectopically active nuclei';
+F = 12; % FontSize; 
+labs = {'30C','22C'};
+co = [1,3,5]; ho = [2,4,6];
+
+
+ plot_miss = cell(1,G); 
+ for k=1:G;     plot_miss{k} = foff{k}(cc14{k}); end
+
+
+ % Look at just 22C data
+  data = plot_miss(co);  Names = names(co); 
+  
+  % data = plot_miss(ho); Names = names(ho); % 30C data
+  
+  Ts = length(data);% number of tracks
+  pW = zeros(Ts);
+  pA = zeros(Ts); 
+  for i=1:Ts
+    for j = 1:Ts
+     pW(i,j) = ranksum(data{i},data{j});   % Wilcox Rank Sum
+     pA(i,j)=anovan([data{i}',data{j}'],{[zeros(1,length(data{i})),ones(1,length(data{j}))]},'display','off'); % 2-way ANOVA
+    end
+  end
+ Wpvals = ['p_{12} = ',num2str(pW(1,2),2), '   p_{13} = ',num2str(pW(1,3),2) , '    p_{23} = ',num2str(pW(2,3),2)  ];
+ Apvals = ['p_{12} = ',num2str(pA(1,2),2), '   p_{13} = ',num2str(pA(1,3),2) , '    p_{23} = ',num2str(pA(2,3),2)  ];
+ 
+ 
+ figure(1); clf;
+ cityscape(data,Names,xlab,F);
+ 
+ figure(3); clf;
+  cumhist(data,Names,xlab,F);
+  title(['pairwise Wilcoxon:  ' Wpvals]);
+  set(gcf,'color','w');
+  
+
+
+
+%%
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 %% Plot Fraction of missing nuclei distributions
 
