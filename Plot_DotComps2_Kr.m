@@ -5,7 +5,7 @@
 %
 % Alistair Boettiger                                   Date Begun: 03/05/10
 % Levine Lab                                     Functional Since: 09/13/10
-%                                                   Last Modified: 02/28/11
+%                                                   Last Modified: 03/07/11
 
 %% Description
 % comparison
@@ -14,7 +14,7 @@
 %% Updates
 % Modified 10/18 to also count ectopic nuclei 
 % Modified 02/28/11 to use cityscape and cumulative sum.  
-
+% Modified 03/07/11 to compare total reporter cells to total endogneous.  
 %% Source Code
 clear all;
 
@@ -47,6 +47,8 @@ lowon = cell(1,K);
 cell_var = cell(1,K); 
 ectop_cnt = cell(1,K);
 ectop_rate = cell(1,K);
+endog_cnt = cell(1,K);
+rept_cnt = cell(1,K); 
 
 for z=1:K
     miss_cnt{z} = zeros(N,1);
@@ -56,6 +58,8 @@ for z=1:K
     age_table{z} = cell(N,2);
     ectop_cnt{z} = zeros(N,1);
     ectop_rate{z} = zeros(N,1);
+    endog_cnt{z} = zeros(N,1);
+    rept_cnt{z} = zeros(N,1);    
 end
 
 xmin = .2; xmax = .9; ymin = .15; ymax = .4;
@@ -76,8 +80,10 @@ for z=1:K % k=2;
           miss_cnt{z}(n) =  length(setdiff(pts2,pts1));
       %     miss_cnt{z}(n) =  length(intersect(setdiff(pts2,pts1), ptr_nucin2));  
           % miss_cnt{z}(n) = anlz_major_reg(folder,emb_roots{z},emb );
+          endog_cnt{z}(n) = length(pts2); 
+          rept_cnt{z}(n) = length(pts1);
            miss_rate{z}(n) = miss_cnt{z}(n)/length(pts2); 
-            [lowon{z}(n),cell_var{z}(n)] = lowon_fxn(H,handles,nin2,ptr_nucin2,[emb_roots{z},emb],1);     
+          %  [lowon{z}(n),cell_var{z}(n)] = lowon_fxn(H,handles,nin2,ptr_nucin2,[emb_roots{z},emb],0);     
            ectop_cnt{z}(n) = length(intersect(setdiff(pts1,pts2),setdiff(ptr_nucin1,ptr_nucin2)')); 
            if length(H) > 2000
                im_dim = 2048;
@@ -100,12 +106,17 @@ end
 
 close all; 
 
+data_folder = '/Users/alistair/Documents/Berkeley/Levine_Lab/Projects/Shadow Enhancers/Code_Data/';
+save([data_folder,'kr_LacZ_data_030711']);
 
 % save kr_LacZ_data2;
 %save kr_LacZ_data_ect;
 
-% % Concatinate data sets from different sessions
-%[miss_cnt,miss_rate,nd,lowon] = merge_data(3,4,N,miss_cnt,miss_rate,nd,lowon);
+
+
+%%
+
+
 
 
 %%
@@ -113,7 +124,7 @@ close all;
     clear all; 
 data_folder = '/Users/alistair/Documents/Berkeley/Levine_Lab/Projects/Shadow Enhancers/Code_Data/';
 load([data_folder,'kr_LacZ_data_ect']);
-
+%%
   
  % load kr_LacZ_data_ect;
 ND = cell2mat(nd); 
@@ -142,7 +153,7 @@ end
 
 
 
-%%
+%% Fraction of missing nuclei
 F = 12;
 xlab = 'fraction of missed nuclei';
 
@@ -175,6 +186,47 @@ plot_miss = cell(1,G);
   set(gcf,'color','w');
 
 
+
+%% Compare endog vs rept
+F = 12;
+xlab = 'expressing nuclei';
+
+names = {'Kr 2 enhancers, Kr';
+         'Kr CD1, Kr';
+         'Kr CD2, Kr'
+         'Kr 2 enhancers, LacZ';
+         'Kr CD1, LacZ';
+         'Kr CD2, LacZ'
+         };
+
+colordef white; 
+endog = cell(1,G); 
+rept = cell(1,G);
+ for k=1:G;     endog{k} = endog_cnt{k}(cc14{k})./ND(cc14{k},k)/5; end
+ for k=1:G;     rept{k} = rept_cnt{k}(cc14{k})./ND(cc14{k},k)/5; end
+
+  data = cat(2,endog,rept);    
+  Ts = length(data);% number of tracks
+  pW = zeros(Ts);
+  pA = zeros(Ts); 
+  for i=1:Ts
+    for j = 1:Ts
+     pW(i,j) = ranksum(data{i},data{j});   % Wilcox Rank Sum
+     pA(i,j)=anovan([data{i}',data{j}'],{[zeros(1,length(data{i})),ones(1,length(data{j}))]},'display','off'); % 2-way ANOVA
+    end
+  end
+ Wpvals = ['p_{14} = ',num2str(pW(1,4),2), '   p_{25} = ',num2str(pW(2,5),2) , '    p_{36} = ',num2str(pW(3,6),2)  ];
+ Apvals = ['p_{14} = ',num2str(pA(1,4),2), '   p_{25} = ',num2str(pA(2,5),2) , '    p_{36} = ',num2str(pA(3,6),2)  ];
+ disp(['pairwise Wilcoxon rank sum:  ', Wpvals]);
+ disp(['2-way ANOVA:  ',Apvals]);
+ 
+ figure(1); clf;
+ cityscape(data,names,xlab,F);
+ 
+ figure(3); clf;
+  cumhist(data,names,xlab,F);
+  title(['pairwise Wilcoxon:  ' Wpvals]);
+  set(gcf,'color','w');
 
 
 %%  Ectopic expression rate
