@@ -6,29 +6,47 @@
 %                                                   Last Modified: 03/01/11
 %
 
-function Im_seg = ShowEctopNuc(folder,name,norm,scale,f)
+function Im_seg = ShowEctopNuc(folder,name,norm,scale,f,hb)
 
-% name = MP02; norm = 2; scale = .3; f = [0,0];
+% name = kniI; norm = 2; scale = .3; f = [1,0];
 
     Ymax = 250;
     Nstrength = .7;
 
    load([folder,name]); 
     age = getage(H,cent);
+    
+    
+    
     disp(age);
     
-    Filt = ismember(H,1:200);
+   if hb == 1 
+        if f(1) == 1
+            Nnucs = max(H(:));
+                  Filt = ismember(H,Nnucs-120:Nnucs);
+                   % figure(11); clf; imshow(Filt);
+        else
+            Filt = ismember(H,1:120);
+           % figure(11); clf; imshow(Filt);
+        end
+   else
+       Filt = 1; 
+   end
     
+    
+    N_y = length(unique(L1));
+    N_r = length(unique(L1&(1-L2).*Filt));
+   
      Iz = uint8(zeros(h,w,3));
      Iz(:,:,1) = 1*uint8(Ymax*L1)+ 255*uint8(L1&(1-L2).*Filt);
-     Iz(:,:,2) = 1*uint8(Ymax*(L1)) + Nstrength*handles.In - 255*uint8(L1&(1-L2));
+     Iz(:,:,2) = 1*uint8(Ymax*(L1)) + Nstrength*handles.In - 255*uint8(L1&(1-L2).*Filt);
      Iz(:,:,3) = Nstrength*handles.In - Iz(:,:,1);
      Im_seg = uint8(bsxfun(@times,double(Iz)/255*norm,double(handles.In)));
      
      Im_seg = imresize(Im_seg,scale);
      Im_seg = imflip(imflip(Im_seg,f(1)),f(2));
      
-     
    imshow(Im_seg);
+   title([num2str(N_y),' Express reporter AND endog.  ',num2str(N_r),' Express reporter NOT endog.'],'Color','w','FontSize',14);
      
      

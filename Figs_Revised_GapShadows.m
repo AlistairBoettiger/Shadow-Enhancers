@@ -54,7 +54,7 @@ figure(1); set(gcf,'color','k');
  subplot(3,1,1); f = [0,0]; I_MP01 = ShowEctopNuc(folder,MP01,2.4,.3,f,1);
  subplot(3,1,2); f = [1,0]; I_MP02 = ShowEctopNuc(folder,MP02,1.8,.3,f,1);
 subplot(3,1,3); f = [1,0]; I_MP09 = ShowEctopNuc(folder,MP09,2.4,.3,f,1);
-
+%%
      imwrite(I_MP01,[fout,'MP01_ectop.tif'],'tif');
      imwrite(I_MP02,[fout,'MP02_ectop.tif'],'tif');
      imwrite(I_MP09,[fout,'MP09_ectop.tif'],'tif');
@@ -85,6 +85,8 @@ subplot(3,1,3); f = [0,2]; Ikni2x = endVrept(folder,kni2x,2.5,.3,f);
            
      
  %% write images to folder
+ 
+ 
      imwrite(Ikr1,[fout,'krCD1_comp.tif'],'tif');
      imwrite(Ikr2,[fout,'krCD2_comp.tif'],'tif');
      imwrite(Ikr2x,[fout,'kr2enh_comp.tif'],'tif');
@@ -129,6 +131,7 @@ subplot(3,1,1); f = [0,2]; Ikr1 = ShowEctopNuc(folder,kr1,1.9,.3,f,0);
 subplot(3,1,2); f = [1,2]; Ikr2 = ShowEctopNuc(folder,kr2,1.9,.3,f,0);
 subplot(3,1,3); f = [1,2]; Ikr2x = ShowEctopNuc(folder,kr2x,1.5,.3,f,0);
 
+%%
 imwrite(Ikr1,[fout,'KrCD1_ectop.tif'],'tif');
 imwrite(Ikr2,[fout,'KrCD2_ectop.tif'],'tif');
 imwrite(Ikr2x,[fout,'Kr_2enh_ectop.tif'],'tif');

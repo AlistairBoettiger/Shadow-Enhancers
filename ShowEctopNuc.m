@@ -8,13 +8,16 @@
 
 function Im_seg = ShowEctopNuc(folder,name,norm,scale,f,hb)
 
-% name = MP02; norm = 2; scale = .3; f = [1,0];
+% name = kniI; norm = 2; scale = .3; f = [1,0]; hb = 0;
 
     Ymax = 250;
     Nstrength = .7;
 
    load([folder,name]); 
     age = getage(H,cent);
+    
+    
+    
     disp(age);
     
    if hb == 1 
@@ -27,10 +30,14 @@ function Im_seg = ShowEctopNuc(folder,name,norm,scale,f,hb)
            % figure(11); clf; imshow(Filt);
         end
    else
-       Filt = 1; 
+       Filt = ismember(H,setdiff(ptr_nucin1,ptr_nucin2)); 
    end
     
     
+    N_y = length(unique(H.*L1));
+    N_r = length(unique(   H.*(L1&(1-L2).*Filt)    ));
+    N_ectopic = N_r/(N_y+N_r);
+   
      Iz = uint8(zeros(h,w,3));
      Iz(:,:,1) = 1*uint8(Ymax*L1)+ 255*uint8(L1&(1-L2).*Filt);
      Iz(:,:,2) = 1*uint8(Ymax*(L1)) + Nstrength*handles.In - 255*uint8(L1&(1-L2).*Filt);
@@ -40,7 +47,8 @@ function Im_seg = ShowEctopNuc(folder,name,norm,scale,f,hb)
      Im_seg = imresize(Im_seg,scale);
      Im_seg = imflip(imflip(Im_seg,f(1)),f(2));
      
-     
    imshow(Im_seg);
+   title(['Ectopic Frac:',num2str(N_ectopic,3),'  ',...
+       num2str(N_y),' rep. AND endog.  ',num2str(N_r),' rep. NOT endog.'],'Color','w','FontSize',10);
      
      
