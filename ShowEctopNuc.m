@@ -30,17 +30,17 @@ function Im_seg = ShowEctopNuc(folder,name,norm,scale,f,hb)
            % figure(11); clf; imshow(Filt);
         end
    else
-       Filt = ismember(H,setdiff(ptr_nucin1,ptr_nucin2)); 
+       Filt =1; % ismember(H,setdiff(ptr_nucin1,ptr_nucin2)); 
    end
     
     
-    N_y = length(unique(H.*L1));
+    N_y = length(unique(H.*(L1&L2)));
     N_r = length(unique(   H.*(L1&(1-L2).*Filt)    ));
     N_ectopic = N_r/(N_y+N_r);
    
      Iz = uint8(zeros(h,w,3));
-     Iz(:,:,1) = 1*uint8(Ymax*L1)+ 255*uint8(L1&(1-L2).*Filt);
-     Iz(:,:,2) = 1*uint8(Ymax*(L1)) + Nstrength*handles.In - 255*uint8(L1&(1-L2).*Filt);
+     Iz(:,:,1) = 1*uint8(Ymax*(L1&L2))+ 255*uint8(L1&(1-L2).*Filt);
+     Iz(:,:,2) = 1*uint8(Ymax*((L1&L2))) + Nstrength*handles.In - 255*uint8(L1&(1-L2).*Filt);
      Iz(:,:,3) = Nstrength*handles.In - Iz(:,:,1);
      Im_seg = uint8(bsxfun(@times,double(Iz)/255*norm,double(handles.In)));
      

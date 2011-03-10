@@ -186,6 +186,13 @@ plot_miss = cell(1,G);
   set(gcf,'color','w');
 
 
+    
+disp([names{1}, ': ' ,num2str(median([data{1}])),'+/-',num2str(std([data{1}])),  ' missing']);
+disp([names{2}, ': ' ,num2str(median([data{2}])),'+/-',num2str(std([data{2}])),  ' missing']);
+disp([names{3}, ': ' ,num2str(median([data{3}])),'+/-',num2str(std([data{3}])),  ' missing']);
+
+
+  
 
 %% Compare endog vs rept
 F = 12;
@@ -233,6 +240,11 @@ rept = cell(1,G);
 
 xlab = 'ectopic expression rate';
 
+names = {'Kr 2 enhancers, 22C';
+         'Kr CD1, 22C';
+         'Kr CD2, 22C'
+         };
+
 plot_miss = cell(1,G); 
  for k=1:G;     plot_miss{k} = ectop_rate{k}(cc14{k}); end
   
@@ -258,4 +270,9 @@ plot_miss = cell(1,G);
   cumhist(data,names,xlab,F);
   title(['pairwise Wilcoxon:  ' Wpvals]);
   set(gcf,'color','w');
+
+      
+disp([names{1}, ': ' ,num2str(median([data{1}])),'+/-',num2str(std([data{1}])),  ' missing']);
+disp([names{2}, ': ' ,num2str(median([data{2}])),'+/-',num2str(std([data{2}])),  ' missing']);
+disp([names{3}, ': ' ,num2str(median([data{3}])),'+/-',num2str(std([data{3}])),  ' missing']);
 
