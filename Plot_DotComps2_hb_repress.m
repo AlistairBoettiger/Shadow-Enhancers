@@ -219,7 +219,7 @@ co = [1,3,5]; ho = [2,4,6];
 
 
  % Look at just 22C data
-  data = plot_miss(co);  Names = names(co); 
+  data = plot_miss(co);   Names = names(co); 
   
   % data = plot_miss(ho); Names = names(ho); % 30C data
   
@@ -245,7 +245,9 @@ co = [1,3,5]; ho = [2,4,6];
   set(gcf,'color','w');
   
 
-
+disp([Names{1}, ': ' ,num2str(mean([data{1}])),'+/-',num2str(std([data{1}])),  ' missing']);
+disp([Names{2}, ': ' ,num2str(mean([data{2}])),'+/-',num2str(std([data{2}])),  ' missing']);
+disp([Names{3}, ': ' ,num2str(mean([data{3}])),'+/-',num2str(std([data{3}])),  ' missing']);
 
 %%
 

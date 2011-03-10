@@ -126,7 +126,10 @@ disp('finished');
 
 
 %%
+ clear all; 
  
+data_folder = '/Users/alistair/Documents/Berkeley/Levine_Lab/Projects/Shadow Enhancers/Code_Data/'; % export folder
+load([data_folder,'hb_LacZ_data_030811']);
 ND = cell2mat(nd); 
 
 age_offset = 4.8;
@@ -243,14 +246,11 @@ plot_miss = cell(1,G);
   set(gcf,'color','w');
 
 
-median([data{3}])
-median([data{4}; data{2}])
-median(data{5})
+    
+disp([names{3}, ': ' ,num2str(median([data{3}])),'+/-',num2str(std([data{3}])),  ' missing']);
+disp([names{4}, ': ' ,num2str(median([data{4}; data{2}])),'+/-',num2str(std([data{4}; data{2}])),  ' missing']);
+disp([names{5}, ': ' ,num2str(median([data{5}])),'+/-',num2str(std([data{5}])),  ' missing']);
 
-
-std([data{3}])
-std([data{4}; data{2}])
-std(data{5})
 %%  Ectopic expression rate
 
 xlab = 'ectopic expression rate';
@@ -307,117 +307,117 @@ plot_miss = cell(1,G);
 
 
 
-
-
-
-
-
-ND = cell2mat(nd); 
-age_offset = 4.8;
-
-emb_cycle = age_offset + log2( nonzeros( sort(ND(:)) ) );
-figure(2); clf; plot( emb_cycle ,'r.');
-
-
-title(['hb embryos, N = ',num2str(length(nonzeros(ND(:))) )  ],'FontSize',15);
-set(gca,'FontSize',15); grid on;
-set(gcf,'color','w'); ylabel('log_2(nuc density)');  xlabel('embryo number'); 
-ylim([10,14.99]);
-
-
-%%
-G= length(names);
-cc14 =cell(1,G); cc13 = cell(1,G); cc12 = cell(1,G); cc11 = cell(1,G); cc10 = cell(1,G); cc9 = cell(1,G); 
-for z=1:G
-    logage =   age_offset + log2( ND(:,z) );
-    
-    cc14{z} = logage >14;
-    cc13{z} = logage <14  & logage> 13;
-    cc12{z}  = logage <13 & logage > 12;
-    cc11{z} = logage <12 ;
-end
-
-%% Plot Fraction of missing nuclei distributions
-
-xlab = 'fraction of missed nuclei';
-F = 12; % FontSize; 
-ymax = .02; pts = 1000;
-
-plot_miss = cell(1,G); 
- for k=1:G;     plot_miss{k} = miss_rate{k}(cc14{k}); end
-
-
-figure(33); clf;  subplot(3,1,1);
-colordef white; set(gcf,'color','w');
-
-x = linspace(0,1,8);  % range and number of bins for histogram
-xx = linspace(0,1,pts); % range a number of bins for interpolated distribution
- method = 'pcubic'; % method for interpolation
-sigma = .05;  % smoothing factor for interpolation
-CompDist(plot_miss,x,xx,method,sigma,names,xlab,F)
-ylim([0,.5*ymax]); title('Early cc14');
-
-
-%~~~~ Plot Fraction of missing nuclei distributions  ~~~~
-
-plot_miss = cell(1,G); 
- for k=1:G;     plot_miss{k} = miss_rate{k}(cc13{k}); end
-
-figure(33); subplot(3,1,2);
-colordef white; set(gcf,'color','w');
-
-x = linspace(0,1,15);  % range and number of bins for histogram
-xx = linspace(0,1,pts); % range a number of bins for interpolated distribution
- method = 'pcubic'; % method for interpolation
-sigma = .1;  % smoothing factor for interpolation
-CompDist(plot_miss,x,xx,method,sigma,names,xlab,F)
-ylim([0,ymax]); title('cc13');
-
-
-
-%~~~~ Plot Fraction of missing nuclei distributions ~~~~~
-
-plot_miss = cell(1,G); 
- for k=1:G;     plot_miss{k} = miss_rate{k}(cc12{k}|cc11{k} ); end
-
-
- figure(33); subplot(3,1,3);
-colordef white; set(gcf,'color','w');
-
-x = linspace(0,1,15);  % range and number of bins for histogram
-xx = linspace(0,1,pts); % range a number of bins for interpolated distribution
- method = 'pcubic'; % method for interpolation
-sigma = .15;  % smoothing factor for interpolation
-CompDist(plot_miss,x,xx,method,sigma,names,xlab,F)
-ylim([0,.5*ymax]);  title('cc11 & 12');
-
-
-%%
-
-
-
-
-%% Total Expression Variability
-
-%%
-xlab = '\sigma/\mu';
-
-
-plot_miss = cell(1,G); 
- for k=1:G;     plot_miss{k} = lowon{k}(cc14{k}); end
-% for k=1:G;     plot_miss{k} = miss_rate{k}; end
-
-
- figure(1); clf;
-% colordef black; set(gcf,'color','k');
-colordef white; set(gcf,'color','w');
-
-x = linspace(0,1,14);  % range and number of bins for histogram
-xx = linspace(0,1,1000); % range a number of bins for interpolated distribution
- method = 'pcubic'; % method for interpolation
-sigma = .1;  % smoothing factor for interpolation
-y = CompDist(plot_miss,x,xx,method,sigma,names,xlab,14);
-
-title('cc13 embryos');
-
-
+% 
+% 
+% 
+% 
+% 
+% ND = cell2mat(nd); 
+% age_offset = 4.8;
+% 
+% emb_cycle = age_offset + log2( nonzeros( sort(ND(:)) ) );
+% figure(2); clf; plot( emb_cycle ,'r.');
+% 
+% 
+% title(['hb embryos, N = ',num2str(length(nonzeros(ND(:))) )  ],'FontSize',15);
+% set(gca,'FontSize',15); grid on;
+% set(gcf,'color','w'); ylabel('log_2(nuc density)');  xlabel('embryo number'); 
+% ylim([10,14.99]);
+% 
+% 
+% %%
+% G= length(names);
+% cc14 =cell(1,G); cc13 = cell(1,G); cc12 = cell(1,G); cc11 = cell(1,G); cc10 = cell(1,G); cc9 = cell(1,G); 
+% for z=1:G
+%     logage =   age_offset + log2( ND(:,z) );
+%     
+%     cc14{z} = logage >14;
+%     cc13{z} = logage <14  & logage> 13;
+%     cc12{z}  = logage <13 & logage > 12;
+%     cc11{z} = logage <12 ;
+% end
+% 
+% %% Plot Fraction of missing nuclei distributions
+% 
+% xlab = 'fraction of missed nuclei';
+% F = 12; % FontSize; 
+% ymax = .02; pts = 1000;
+% 
+% plot_miss = cell(1,G); 
+%  for k=1:G;     plot_miss{k} = miss_rate{k}(cc14{k}); end
+% 
+% 
+% figure(33); clf;  subplot(3,1,1);
+% colordef white; set(gcf,'color','w');
+% 
+% x = linspace(0,1,8);  % range and number of bins for histogram
+% xx = linspace(0,1,pts); % range a number of bins for interpolated distribution
+%  method = 'pcubic'; % method for interpolation
+% sigma = .05;  % smoothing factor for interpolation
+% CompDist(plot_miss,x,xx,method,sigma,names,xlab,F)
+% ylim([0,.5*ymax]); title('Early cc14');
+% 
+% 
+% %~~~~ Plot Fraction of missing nuclei distributions  ~~~~
+% 
+% plot_miss = cell(1,G); 
+%  for k=1:G;     plot_miss{k} = miss_rate{k}(cc13{k}); end
+% 
+% figure(33); subplot(3,1,2);
+% colordef white; set(gcf,'color','w');
+% 
+% x = linspace(0,1,15);  % range and number of bins for histogram
+% xx = linspace(0,1,pts); % range a number of bins for interpolated distribution
+%  method = 'pcubic'; % method for interpolation
+% sigma = .1;  % smoothing factor for interpolation
+% CompDist(plot_miss,x,xx,method,sigma,names,xlab,F)
+% ylim([0,ymax]); title('cc13');
+% 
+% 
+% 
+% %~~~~ Plot Fraction of missing nuclei distributions ~~~~~
+% 
+% plot_miss = cell(1,G); 
+%  for k=1:G;     plot_miss{k} = miss_rate{k}(cc12{k}|cc11{k} ); end
+% 
+% 
+%  figure(33); subplot(3,1,3);
+% colordef white; set(gcf,'color','w');
+% 
+% x = linspace(0,1,15);  % range and number of bins for histogram
+% xx = linspace(0,1,pts); % range a number of bins for interpolated distribution
+%  method = 'pcubic'; % method for interpolation
+% sigma = .15;  % smoothing factor for interpolation
+% CompDist(plot_miss,x,xx,method,sigma,names,xlab,F)
+% ylim([0,.5*ymax]);  title('cc11 & 12');
+% 
+% 
+% %%
+% 
+% 
+% 
+% 
+% %% Total Expression Variability
+% 
+% %%
+% xlab = '\sigma/\mu';
+% 
+% 
+% plot_miss = cell(1,G); 
+%  for k=1:G;     plot_miss{k} = lowon{k}(cc14{k}); end
+% % for k=1:G;     plot_miss{k} = miss_rate{k}; end
+% 
+% 
+%  figure(1); clf;
+% % colordef black; set(gcf,'color','k');
+% colordef white; set(gcf,'color','w');
+% 
+% x = linspace(0,1,14);  % range and number of bins for histogram
+% xx = linspace(0,1,1000); % range a number of bins for interpolated distribution
+%  method = 'pcubic'; % method for interpolation
+% sigma = .1;  % smoothing factor for interpolation
+% y = CompDist(plot_miss,x,xx,method,sigma,names,xlab,14);
+% 
+% title('cc13 embryos');
+% 
+% 
