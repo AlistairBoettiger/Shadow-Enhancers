@@ -200,10 +200,10 @@ load([data_folder, 'hb_SD-03-08-11']);
      
  names = {'control 22C';
           'control 30C';
-          'no shadow 22C';
-          'no shadow 30C';
-          'no primary 22C';
-          'no primary 30C'
+          'no distal 22C';
+          'no distal 30C';
+          'no proximal 22C';
+          'no proximal 30C'
           };
       
  
@@ -250,7 +250,7 @@ co = [1,3,5]; ho = [2,4,6];
 
 
  % Look at just 22C data
-  data = plot_miss(co); names = names(co); 
+  data = plot_miss(co); Names = names(co); 
   
   % data = plot_miss(ho); names = names(ho); % 30C data
   
@@ -270,10 +270,10 @@ co = [1,3,5]; ho = [2,4,6];
  disp(['2-way Anova: ', Apvals]);
  
  figure(1); clf;
- cityscape(data,names,xlab,F);
+ cityscape(data,Names,xlab,F);
  
  figure(3); clf;
-  cumhist(data,names,xlab,F);
+  cumhist(data,Names,xlab,F);
   title(['pairwise Wilcoxon:  ' Wpvals]);
   set(gcf,'color','w');
   
@@ -284,6 +284,60 @@ disp([names{3}, ': ' ,num2str(median([data{3}])),'+/-',num2str(std([data{3}])), 
 % ranksum(data{1}, MP09_22Cect)
  anovan([data{1}',MP09_22Cect'],{[zeros(1,length(data{1})),ones(1,length(MP09_22Cect))]},'display','off')
 
+ 
+ %% Plot Expression variability.
+
+xlab = 'fraction of missed nuclei';
+F = 12; % FontSize; 
+labs = {'30C','22C'};
+co = [1,3,5]; ho = [2,4,6];
+
+
+ plot_miss = cell(1,G); 
+ for k=1:G;     plot_miss{k} = foff{k}(cc13{k}); end
+
+
+ % Look at just 22C data
+  data = plot_miss(ho);  Names = names(ho); 
+  
+  data{1} = data{1} - median(data{1}) + .5;
+  
+  data{2} = data{2} - median(data{2})+ .5;
+  
+  
+  data{3} = data{3} - median(data{3})+ .5;
+  
+  
+  % data = plot_miss(ho); names = names(ho); % 30C data
+  
+  Ts = length(data);% number of tracks
+  pW = zeros(Ts);
+  pA = zeros(Ts); 
+  for i=1:Ts
+    for j = 1:Ts
+     pW(i,j) = ranksum(data{i},data{j});   % Wilcox Rank Sum
+     pA(i,j)=anovan([data{i}',data{j}'],{[zeros(1,length(data{i})),ones(1,length(data{j}))]},'display','off'); % 2-way ANOVA
+    end
+  end
+ Wpvals = ['p_{12} = ',num2str(pW(1,2),2), '   p_{13} = ',num2str(pW(1,3),2) , '    p_{23} = ',num2str(pW(2,3),2)  ];
+ Apvals = ['p_{12} = ',num2str(pA(1,2),2), '   p_{13} = ',num2str(pA(1,3),2) , '    p_{23} = ',num2str(pA(2,3),2)  ];
+ 
+ 
+ disp(['2-way Anova: ', Apvals]);
+
+ 
+ figure(3); clf;
+  cumhist(data,Names,xlab,F);
+  title(['pairwise Wilcoxon:  ' Wpvals]);
+  set(gcf,'color','w');
+  
+  disp([names{1}, ': ' ,num2str(median([data{1}])),'+/-',num2str(std([data{1}])),  ' missing']);
+disp([names{2}, ': ' ,num2str(median([data{2}])),'+/-',num2str(std([data{2}])),  ' missing']);
+disp([names{3}, ': ' ,num2str(median([data{3}])),'+/-',num2str(std([data{3}])),  ' missing']);
+
+% ranksum(data{1}, MP09_22Cect)
+% anovan([data{1}',MP09_22Cect'],{[zeros(1,length(data{1})),ones(1,length(MP09_22Cect))]},'display','off')
+ 
 %%  Ectopic expression rate
 
 xlab = 'ectopic expression rate';

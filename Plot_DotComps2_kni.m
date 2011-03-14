@@ -30,8 +30,8 @@ emb_roots = {'kni_2enh_22C_LacZ_kni';
           
 
 names = {'kni 2 enhancers, 22C';
-         'kni int, 22C';
-         'kni 5p, 22C'
+         'kni proximal, 22C'; % intronic
+         'kni distal, 22C'% 5p
          };
 
 
@@ -209,11 +209,11 @@ rept = cell(1,G);
   set(gcf,'color','w');
 
 %% Fraction missed 
-F = 12;
+F = 14;
 xlab = 'fraction of missed nuclei';
 names = {'kni 2 enhancers, 22C';
-         'kni int, 22C';
-         'kni 5p, 22C'
+         'kni distal, 22C';
+         'kni proximal, 22C'
          };
 
 plot_miss = cell(1,G); 
@@ -230,7 +230,7 @@ plot_miss = cell(1,G);
      pA(i,j)=anovan([data{i}',data{j}'],{[zeros(1,length(data{i})),ones(1,length(data{j}))]},'display','off'); % 2-way ANOVA
     end
   end
- Wpvals = ['p_{12} = ',num2str(pW(1,2),2), '   p_{13} = ',num2str(pW(1,3),2) , '    p_{23} = ',num2str(pW(2,3),2)  ];
+ Wpvals = ['p_{GF} = ',num2str(pW(1,2),2), '   p_{GE} = ',num2str(pW(1,3),2) , '    p_{EF} = ',num2str(pW(2,3),2)  ];
  Apvals = ['p_{12} = ',num2str(pA(1,2),2), '   p_{13} = ',num2str(pA(1,3),2) , '    p_{23} = ',num2str(pA(2,3),2)  ];
  disp(['pairwise Wilcoxon rank sum:  ', Wpvals]);
  disp(['2-way ANOVA:  ',Apvals]);
@@ -254,7 +254,7 @@ disp([names{3},': ' ,num2str(median([data{3}])),'+/-',num2str(std([data{3}])),  
   
 
 %%  Ectopic expression rate
-F = 12;
+F = 14;
 xlab = 'ectopic expression rate';
 
 plot_miss = cell(1,G); 
@@ -271,7 +271,7 @@ plot_miss = cell(1,G);
      pA(i,j)=anovan([data{i}',data{j}'],{[zeros(1,length(data{i})),ones(1,length(data{j}))]},'display','off'); % 2-way ANOVA
     end
   end
- Wpvals = ['p_{12} = ',num2str(pW(1,2),2), '   p_{13} = ',num2str(pW(1,3),2) , '    p_{23} = ',num2str(pW(2,3),2)  ];
+ Wpvals = ['p_{GF} = ',num2str(pW(1,2),2), '   p_{GE} = ',num2str(pW(1,3),2) , '    p_{EF} = ',num2str(pW(2,3),2)  ];
  Apvals = ['p_{12} = ',num2str(pA(1,2),2), '   p_{13} = ',num2str(pA(1,3),2) , '    p_{23} = ',num2str(pA(2,3),2)  ];
  disp(['pairwise Wilcoxon rank sum:  ', Wpvals]);
  disp(['2-way ANOVA:  ',Apvals]);

@@ -164,10 +164,10 @@ load([data_folder,'hb_SD-12-09-10_repress']);
      
  names = {'control 22C';
           'control 30C';
-          'no shadow 22C';
-          'no shadow 30C';
-          'no primary 22C';
-          'no primary 30C'
+          'no distal 22C';
+          'no distal 30C';
+          'no proximal 22C';
+          'no proximal 30C'
           };
       
  
@@ -209,7 +209,7 @@ end
 %% Plot Fraction of missing nuclei distributions
 
 xlab = 'fraction of ectopically active nuclei';
-F = 12; % FontSize; 
+F = 14; % FontSize; 
 labs = {'30C','22C'};
 co = [1,3,5]; ho = [2,4,6];
 
@@ -232,7 +232,7 @@ co = [1,3,5]; ho = [2,4,6];
      pA(i,j)=anovan([data{i}',data{j}'],{[zeros(1,length(data{i})),ones(1,length(data{j}))]},'display','off'); % 2-way ANOVA
     end
   end
- Wpvals = ['p_{12} = ',num2str(pW(1,2),2), '   p_{13} = ',num2str(pW(1,3),2) , '    p_{23} = ',num2str(pW(2,3),2)  ];
+ Wpvals = ['p_{CB} = ',num2str(pW(1,2),2), '   p_{CA} = ',num2str(pW(1,3),2) , '    p_{AB} = ',num2str(pW(2,3),2)  ];
  Apvals = ['p_{12} = ',num2str(pA(1,2),2), '   p_{13} = ',num2str(pA(1,3),2) , '    p_{23} = ',num2str(pA(2,3),2)  ];
  
  
