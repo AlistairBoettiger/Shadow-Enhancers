@@ -15,6 +15,8 @@
 % Modified 10/18 to also count ectopic nuclei 
 % Modified 02/28/11 to use cityscape and cumulative sum.  
 % Modified 03/07/11 to compare total reporter cells to total endogneous.  
+% Modified 03/16/11 to compute fraction of region activated for both
+% endogenous and each reporter (relative to endogenous region). 
 %% Source Code
 clear all;
 
@@ -49,6 +51,8 @@ ectop_cnt = cell(1,K);
 ectop_rate = cell(1,K);
 endog_cnt = cell(1,K);
 rept_cnt = cell(1,K); 
+endog_frac  = cell(1,K); 
+rept_frac  = cell(1,K); 
 
 for z=1:K
     miss_cnt{z} = zeros(N,1);
@@ -60,6 +64,8 @@ for z=1:K
     ectop_rate{z} = zeros(N,1);
     endog_cnt{z} = zeros(N,1);
     rept_cnt{z} = zeros(N,1);    
+    endog_frac{z}  =  zeros(N,1);   
+    rept_frac{z}  =  zeros(N,1);   
 end
 
 xmin = .2; xmax = .9; ymin = .15; ymax = .4;
@@ -85,6 +91,10 @@ for z=1:K % k=2;
            miss_rate{z}(n) = miss_cnt{z}(n)/length(pts2); 
           %  [lowon{z}(n),cell_var{z}(n)] = lowon_fxn(H,handles,nin2,ptr_nucin2,[emb_roots{z},emb],0);     
            ectop_cnt{z}(n) = length(intersect(setdiff(pts1,pts2),setdiff(ptr_nucin1,ptr_nucin2)')); 
+           
+           endog_frac{z}(n) = length(intersect(ptr_nucin2,pts2))/length(ptr_nucin2); 
+           rept_frac{z}(n) = length(intersect(ptr_nucin1,pts1))/length(ptr_nucin2); 
+           
            if length(H) > 2000
                im_dim = 2048;
            else
@@ -107,8 +117,9 @@ end
 close all; 
 
 data_folder = '/Users/alistair/Documents/Berkeley/Levine_Lab/Projects/Shadow Enhancers/Code_Data/';
-save([data_folder,'kr_LacZ_data_030711']);
+save([data_folder,'kr_LacZ_data_031611']);
 
+%save([data_folder,'kr_LacZ_data_030711']);
 % save kr_LacZ_data2;
 %save kr_LacZ_data_ect;
 
@@ -121,9 +132,9 @@ save([data_folder,'kr_LacZ_data_030711']);
 
 %%
 
-    clear all; 
-data_folder = '/Users/alistair/Documents/Berkeley/Levine_Lab/Projects/Shadow Enhancers/Code_Data/';
-load([data_folder,'kr_LacZ_data_ect']);
+ %    clear all; 
+% data_folder = '/Users/alistair/Documents/Berkeley/Levine_Lab/Projects/Shadow Enhancers/Code_Data/';
+% load([data_folder,'kr_LacZ_data_ect']);
 %%
   
  % load kr_LacZ_data_ect;
@@ -200,7 +211,7 @@ disp([names{3}, ': ' ,num2str(median([data{3}])),'+/-',num2str(std([data{3}])), 
   
 
 %% Compare endog vs rept
-F = 12;
+F = 14;
 xlab = 'expressing nuclei';
 
 names = {'Kr 2 enhancers, Kr';
@@ -263,7 +274,7 @@ plot_miss = cell(1,G);
      pA(i,j)=anovan([data{i}',data{j}'],{[zeros(1,length(data{i})),ones(1,length(data{j}))]},'display','off'); % 2-way ANOVA
     end
   end
- Wpvals = ['p_{12} = ',num2str(pW(1,2),2), '   p_{13} = ',num2str(pW(1,3),2) , '    p_{23} = ',num2str(pW(2,3),2)  ];
+ Wpvals = ['p_{KI} = ',num2str(pW(1,2),2), '   p_{KJ} = ',num2str(pW(1,3),2) , '    p_{IJ} = ',num2str(pW(2,3),2)  ];
  Apvals = ['p_{12} = ',num2str(pA(1,2),2), '   p_{13} = ',num2str(pA(1,3),2) , '    p_{23} = ',num2str(pA(2,3),2)  ];
  disp(['pairwise Wilcoxon rank sum:  ', Wpvals]);
  disp(['2-way ANOVA:  ',Apvals]);
@@ -280,4 +291,58 @@ plot_miss = cell(1,G);
 disp([names{1}, ': ' ,num2str(median([data{1}])),'+/-',num2str(std([data{1}])),  ' missing']);
 disp([names{2}, ': ' ,num2str(median([data{2}])),'+/-',num2str(std([data{2}])),  ' missing']);
 disp([names{3}, ': ' ,num2str(median([data{3}])),'+/-',num2str(std([data{3}])),  ' missing']);
+
+%% Fraction of Region Activated
+
+F=14;
+xlab = 'expressing nuclei';
+
+names = {'Kr 2 enhancers, Kr';
+         'Kr distal, Kr';  % CD1
+         'Kr proximal, Kr' % CD2
+         'Kr 2 enhancers, LacZ';
+         'Kr distal, LacZ'; % CD1
+         'Kr proximal, LacZ'  % CD2
+         };
+
+colordef white; 
+endog = cell(1,G); 
+rept = cell(1,G);
+ for k=1:G;     endog{k} = endog_frac{k}(cc14{k}); end
+ for k=1:G;     rept{k} = rept_frac{k}(cc14{k}); end
+
+  data = cat(2,endog,rept);    
+  Ts = length(data);% number of tracks
+  pW = zeros(Ts);
+  pA = zeros(Ts); 
+  for i=1:Ts
+    for j = 1:Ts
+     pW(i,j) = ranksum(data{i},data{j});   % Wilcox Rank Sum
+    % pA(i,j)=anovan([data{i}',data{j}'],{[zeros(1,length(data{i})),ones(1,length(data{j}))]},'display','off'); % 2-way ANOVA
+    end
+  end
+ Wpvals = ['p_{14} = ',num2str(pW(1,4),2), '   p_{25} = ',num2str(pW(2,5),2) , '    p_{36} = ',num2str(pW(3,6),2)  ];
+ Apvals = ['p_{14} = ',num2str(pA(1,4),2), '   p_{25} = ',num2str(pA(2,5),2) , '    p_{36} = ',num2str(pA(3,6),2)  ];
+ disp(['pairwise Wilcoxon rank sum:  ', Wpvals]);
+ disp(['2-way ANOVA:  ',Apvals]);
+ 
+ figure(1); clf;
+ cityscape(data,names,xlab,F);
+ 
+ figure(3); clf;
+  cumhist(data,names,xlab,F);
+  title(['pairwise Wilcoxon:  ' Wpvals]);
+  set(gcf,'color','w');
+
+  
+  disp([names{1}, ': ' ,num2str(median([data{1}])),'+/-',num2str(std([data{1}])),  ' missing']);
+disp([names{2}, ': ' ,num2str(median([data{2}])),'+/-',num2str(std([data{2}])),  ' missing']);
+disp([names{3}, ': ' ,num2str(median([data{3}])),'+/-',num2str(std([data{3}])),  ' missing']);
+disp([names{4}, ': ' ,num2str(median([data{4}])),'+/-',num2str(std([data{4}])),  ' missing']);
+disp([names{5}, ': ' ,num2str(median([data{5}])),'+/-',num2str(std([data{5}])),  ' missing']);
+disp([names{6}, ': ' ,num2str(median([data{6}])),'+/-',num2str(std([data{6}])),  ' missing']);
+
+
+  
+
 

@@ -51,6 +51,8 @@ ectop_cnt = cell(1,K);
 ectop_rate = cell(1,K);
 endog_cnt = cell(1,K);
 rept_cnt = cell(1,K); 
+endog_frac  = cell(1,K); 
+rept_frac  = cell(1,K); 
 
 for z=1:K
     miss_cnt{z} = zeros(N,1);
@@ -62,6 +64,8 @@ for z=1:K
     ectop_rate{z} = zeros(N,1);
     endog_cnt{z} = zeros(N,1);
     rept_cnt{z} = zeros(N,1);    
+    endog_frac{z}  =  zeros(N,1);   
+    rept_frac{z}  =  zeros(N,1);   
 end
 
 
@@ -91,6 +95,9 @@ for z=1:K % k=2;
            ectop_cnt{z}(n) = length(intersect(setdiff(pts1,pts2),setdiff(ptr_nucin1,ptr_nucin2)')); 
         %   [lowon{z}(n), cell_var{z}(n)] =   lowon_fxn(H,handles,nin2,ptr_nucin2,[emb_roots{z},emb],1); 
           
+           endog_frac{z}(n) = length(intersect(ptr_nucin2,pts2))/length(ptr_nucin2); 
+           rept_frac{z}(n) = length(intersect(ptr_nucin1,pts1))/length(ptr_nucin2); 
+        
             [lowon{z}(n)] = lowon_fxn(H,handles,nin2,ptr_nucin2,[emb_roots{z},emb],0);  
            if length(H) > 2000
                im_dim = 2048;
@@ -112,7 +119,9 @@ end
 
 close all; 
 data_folder = '/Users/alistair/Documents/Berkeley/Levine_Lab/Projects/Shadow Enhancers/Code_Data/';
-save([data_folder,'kni_LacZ_data_030711']);
+
+save([data_folder,'kni_LacZ_data_031611']);
+% save([data_folder,'kni_LacZ_data_030711']);
 disp('finished');
 
 % Avoid dependence on endogenous region finding for computing ectopic
@@ -138,7 +147,7 @@ disp('finished');
      clear all; 
 data_folder = '/Users/alistair/Documents/Berkeley/Levine_Lab/Projects/Shadow Enhancers/Code_Data/';
 %load([data_folder,'kni_LacZ_data_2']);
-load([data_folder,'kni_LacZ_data_030711']);
+load([data_folder,'kni_LacZ_data_031611']);% ([data_folder,'kni_LacZ_data_030711']);
  
 %%
  
@@ -287,5 +296,56 @@ plot_miss = cell(1,G);
 disp([names{1},': ' ,num2str(median([data{1}])),'+/-',num2str(std([data{1}])),  ' ectopic']);
 disp([names{2},': ' ,num2str(median([data{2}])),'+/-',num2str(std([data{2}])),  ' ectopic']);
 disp([names{3},': ' ,num2str(median([data{3}])),'+/-',num2str(std([data{3}])),  ' ectopic']);
+
+%%   'Completeness' of Pattern
+F=14;
+xlab = 'expressing nuclei';
+
+names = {'kni 2 enhancers, kni';
+         'kni int, kni';
+         'kni 5p, kni';
+         'kni 2 enhancers, LacZ';
+         'kni int, LacZ';
+         'kni 5p, LacZ'
+         };
+
+colordef white; 
+endog = cell(1,G); 
+rept = cell(1,G);
+ for k=1:G;     endog{k} = endog_frac{k}(cc14{k}); end
+ for k=1:G;     rept{k} = rept_frac{k}(cc14{k}); end
+
+  data = cat(2,endog,rept);    
+  Ts = length(data);% number of tracks
+  pW = zeros(Ts);
+  pA = zeros(Ts); 
+  for i=1:Ts
+    for j = 1:Ts
+     pW(i,j) = ranksum(data{i},data{j});   % Wilcox Rank Sum
+    % pA(i,j)=anovan([data{i}',data{j}'],{[zeros(1,length(data{i})),ones(1,length(data{j}))]},'display','off'); % 2-way ANOVA
+    end
+  end
+ Wpvals = ['p_{14} = ',num2str(pW(1,4),2), '   p_{25} = ',num2str(pW(2,5),2) , '    p_{36} = ',num2str(pW(3,6),2)  ];
+ Apvals = ['p_{14} = ',num2str(pA(1,4),2), '   p_{25} = ',num2str(pA(2,5),2) , '    p_{36} = ',num2str(pA(3,6),2)  ];
+ disp(['pairwise Wilcoxon rank sum:  ', Wpvals]);
+ disp(['2-way ANOVA:  ',Apvals]);
+ 
+ figure(1); clf;
+ cityscape(data,names,xlab,F);
+ 
+ figure(3); clf;
+  cumhist(data,names,xlab,F);
+  title(['pairwise Wilcoxon:  ' Wpvals]);
+  set(gcf,'color','w');
+
+  
+  disp([names{1}, ': ' ,num2str(median([data{1}])),'+/-',num2str(std([data{1}])),  ' missing']);
+disp([names{2}, ': ' ,num2str(median([data{2}])),'+/-',num2str(std([data{2}])),  ' missing']);
+disp([names{3}, ': ' ,num2str(median([data{3}])),'+/-',num2str(std([data{3}])),  ' missing']);
+disp([names{4}, ': ' ,num2str(median([data{4}])),'+/-',num2str(std([data{4}])),  ' missing']);
+disp([names{5}, ': ' ,num2str(median([data{5}])),'+/-',num2str(std([data{5}])),  ' missing']);
+disp([names{6}, ': ' ,num2str(median([data{6}])),'+/-',num2str(std([data{6}])),  ' missing']);
+
+
 
 

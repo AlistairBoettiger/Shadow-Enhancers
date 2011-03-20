@@ -138,5 +138,47 @@ imwrite(Ikr2x,[fout,'Kr_2enh_ectop.tif'],'tif');
 
 
 
+%%
 
+name = 'kni_int_22C_LacZ_kni07_data.mat'; % 06~  22  24  02e  04e  07e ~14 16 %   22*, 23, 11, 13, 15, 18, 33  % cc13   01  10 11  12
+
+   load([folder,name]); 
+   
+   [h,w] = size(Cell_bnd); 
+   
+   Cell_Bords = uint8(zeros(h,w));
+   Cell_Bords(cellbords) = 1; 
+    figure(1); clf; imagesc(Cell_Bords); colormap hot;
+ 
+    clear Cell_bnd;
+ Cell_bnd = 1 - Cell_Bords; 
+ Cell_bnd(H==0) = 1;  
+   
+   Nnucs = max(H(:));
+   
+   rep_reg = intersect(1:Nnucs,ptr_nucin1);
+   rep_dots = rep_reg( rand(length(rep_reg),1)>.6 );
+   Rep_region = ismember(H,rep_dots);
+   
+
+
+   
+   
+   I = uint8(zeros(h,w,3));
+   I(:,:,1) = 255*Cell_bnd ;
+   I(:,:,2) = 255*Cell_bnd- 255*uint8(Rep_region);
+   I(:,:,3) = 255*Cell_bnd- 255*uint8(Rep_region);
+   
+   figure(1); clf; imagesc(I); 
+   hold on; plot(bndrys2{1}(:,1),bndrys2{1}(:,2),'k','linewidth',5);
+   axis off; set(gcf,'color','w');
+   
+   
+   
+   
+   
+   
+   
+   
+   
 
