@@ -24,6 +24,7 @@
 % processing.  
 % Modified to save data 12/14
 % Modified 12/15 to add additional output: compare center vs boundary
+% Modified 03/21/11 to compare cell-by-cell
 %% Source Code
 clear all;
 
@@ -117,8 +118,9 @@ for z=1:K % k=2;
 
         try
         load([folder,'/',emb_roots{z},emb,'_data.mat']);   
-             %[miss_rate1{z}(n),miss_rate2{z}(n),miss_rate3{z}(n)] =  divide_regs(L2,H,pts1,pts2,ptr_nucin2,handles.In);
-              [miss_rate{z,1}(n),miss_rate{z,2}(n),miss_rate{z,3}(n)] =  divide_regs(L2,H,pts1,pts2,ptr_nucin2,handles.In,0);
+       %       [miss_rate{z,1}(n),miss_rate{z,2}(n),miss_rate{z,3}(n)] =  divide_regs(L2,H,pts1,pts2,ptr_nucin2,handles.In,0);
+              
+              layer_miss_rate = divide_regs(Reg2,L2n1,H,cellbords,dispim); 
            if length(H) > 2000
                im_dim = 2048;
            else
