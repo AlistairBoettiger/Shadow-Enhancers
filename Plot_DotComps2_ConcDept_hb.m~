@@ -184,213 +184,89 @@ xlabel('distance from hb-boundary (cells)','FontSize',F);
 title([names{z},'  cc14   N = ',num2str(N)],'FontSize',F);
 set(gca,'FontSize',F);
  xlim([0,30.5]); ylim([0,.6]); 
-
-
-%%
-
- % clear all; load hb_SDreg_12-15-10
- % Merge data
  
-%  %
-%       % all names
-% names = {'2 enhancers, 22C';  % 1
-%          'no shadow, 22C';    % 2
-%          'no shadow, 30C';    % 3
-%          'no shadow, 30C, b'; % 4
-%          'no primary, 22C';   % 5
-%          '2 enh 22C';         % 6
-%          '2 enh 30C';         % 7
-%          'no primary 30C';    % 8
-%          'no shadow, 22C, b'; % 9
-%          'no primary 22C, b'; % 10 
-%          'no primary 30C, b'; % 11
-%          'no shadow 30C, c'   % 12
-%          };
-
-
-
-
  
-
+ %% new plotting cc14
  
- for k=1:G
-     for r=1:3
-        data = nonzeros(foff{k,r});
-        foff{k,r} = [data; zeros(200-length(data),1)];
-     end
-    data = nonzeros(Nnuc{k});
-    Nnuc{k} = [data; zeros(200-length(data),1)];
- end
-     
-
+ clear all;
  
+data_folder = '/Users/alistair/Documents/Berkeley/Levine_Lab/Projects/Shadow Enhancers/Code_Data/';
 
-%%
- % clear all; load hb_SD-region_data; 
+  load([data_folder,'hb_ConcDept']);
+  
+  
+  F = 16;
 
-ND = cell2mat(Nnuc); 
-age_offset = 4.8;
+    figure(1); clf; 
+    colordef black;
+    set(gcf,'color','k');
 
-emb_cycle = age_offset + log2( nonzeros( sort(ND(:)) ) );
-figure(2); clf; plot( emb_cycle ,'r.');
+      
+    data = zeros(G,30); 
+    C = flipud(hsv(G));
+    leg_lab = cell(G,1);  
+  
+for z = 1:6
+    emb_set = foff{z}(cc14{z});
 
-
-title(['hb embryos, N = ',num2str(length(nonzeros(ND(:))) )  ],'FontSize',15);
-set(gca,'FontSize',15); grid on;
-set(gcf,'color','w'); ylabel('log_2(nuc density)');  xlabel('embryo number'); 
-ylim([10,14.99]);
-
-
-%%
-cc14 =cell(1,G); cc13 = cell(1,G); cc12 = cell(1,G); cc11 = cell(1,G); cc10 = cell(1,G); cc9 = cell(1,G); 
-for z=1:G
-    logage =   age_offset + log2( ND(:,z) );    
-    cc14{z} = logage >14;
-    cc13{z} = logage <14  & logage> 13;
-    cc12{z}  = logage <13 & logage > 12;
-    cc11{z} = logage <12 & logage > 0 ;
-    for r=1:3
-        foff{z,r}(foff{z,r}==Inf) = 0;  % remove infs as well 
+    N = length(emb_set); 
+    miss_freq = zeros(N,40); 
+    emb_norm = zeros(N,40); 
+    for n=1:N;
+        L = length(emb_set{n});
+        miss_freq(n,1:L) = emb_set{n};
+        emb_norm(n,1:L) = emb_set{n}>0; 
     end
+
+    miss_dist_hist = sum(miss_freq)./sum(emb_norm); 
+    data(z,1:30) = miss_dist_hist(1:30); 
+    leg_lab{z} = ['hb ', names{z},'  cc14   N = ',num2str(N)];
 end
 
-%%
+plot(data([1,3],:)','.','MarkerSize',10); legend(leg_lab([1,3]));
+
+figure(2); clf; set(gcf,'color','k');
+bar(data([1,3,5],:)'); legend(leg_lab([1,3,5]));
+set(gca,'FontSize',F);
+xlabel('Distance from edge of expression (cells)');
+ylabel('mean fraction of inactive nuclei'); xlim([0,30.5]); ylim([0,.25]); 
+
+%% cc13
 
 
-fout = '/Users/alistair/Documents/Berkeley/Levine_Lab/Projects/Shadow Enhancers/Results/';
-reg = {'Anterior '; 'Central'; 'Boundary'};
-xlab = 'fraction of missed nuclei';
-F = 12; % FontSize; 
-ymax = .02; pts = 1000;
+    figure(1); clf; 
+    colordef black;
+    set(gcf,'color','k');
 
-for r = 1:3
+      
+    data = zeros(G,20); 
+    C = flipud(jet(G));
+    leg_lab = cell(G,1);  
+  
+for z = 1:6
+    emb_set = foff{z}(cc13{z});
 
-    f1=figure(30+r); clf;  subplot(3,1,1);
-    set(f1,'Position',[50,550,400,1000]);
-    %~~~~ Plot Fraction of missing nuclei distributions  ~~~~
-plot_miss14 = cell(1,G); 
- for k=1:G;     plot_miss14{k} = foff{k,r}(cc14{k}); end
-
-colordef white; set(gcf,'color','w');
-x = linspace(0,1,15);  % range and number of bins for histogram
-xx = linspace(0,1,pts); % range a number of bins for interpolated distribution
- method = 'pcubic'; % method for interpolation
-sigma = .01;  % smoothing factor for interpolation
-CompDist(plot_miss14,x,xx,method,sigma,names,xlab,F)
-ylim([0,.5*ymax]); title([reg{r}, ' early cc14']);
-
-f2 = figure(20+r); subplot(3,1,1); 
-   set(f2,'Position',[450,550,400,1000]);
-BoxDist(plot_miss14,names,[reg{r}, ' early cc14'],{'30C','22C'});
-xlim([0,1]);
-
-  P = zeros(G);
-    for j = 1:G
-        for k=1:G
-        P(j,k) = ranksum(plot_miss14{j},plot_miss14{k});
-        end
+    N = length(emb_set); 
+    miss_freq = zeros(N,40); 
+    emb_norm = zeros(N,40); 
+    for n=1:N;
+        L = length(emb_set{n});
+        miss_freq(n,1:L) = emb_set{n};
+        emb_norm(n,1:L) = emb_set{n}>0; 
     end
-       f3=figure(10+r); subplot(3,1,1); imagesc(P); colormap(jet); colorbar; colordef white; set(gca,'color','w');
-          set(f3,'Position',[850,550,400,1000]);
-     set(gca,'YtickLabel', str2mat(names{:}),'YTick',1:6,'fontsize',15,...
-        'YMinorTick','on'); title([reg{r}, ' early cc14']); 
-        set(gcf,'color','w');
 
-
-%~~~~ Plot Fraction of missing nuclei distributions  ~~~~
-plot_miss13 = cell(1,G); 
-for k=1:G;     plot_miss13{k} = foff{k,r}(cc13{k}); end
-figure(30+r); subplot(3,1,2);
-colordef white; set(gcf,'color','w');
-x = linspace(0,1,20);  % range and number of bins for histogram
-xx = linspace(0,1,pts); % range a number of bins for interpolated distribution
- method = 'pcubic'; % method for interpolation
-sigma = .05;  % smoothing factor for interpolation
-CompDist(plot_miss13,x,xx,method,sigma,names,xlab,F)
-ylim([0,ymax]); title([reg{r}, ' cc13']);
-
-figure(20+r); subplot(3,1,2); 
-BoxDist(plot_miss13,names,[reg{r}, ' cc13'],{'30C','22C'});
-xlim([0,1]);
-
-
-box_data13{r} = plot_miss13;
-
-  P = zeros(G);
-    for j = 1:G
-        for k=1:G
-        P(j,k) = ranksum(plot_miss13{j},plot_miss13{k});
-        end
-    end
-    figure(10+r); subplot(3,1,2); imagesc(P); colormap(jet); colorbar; colordef white; set(gca,'color','w');
-     set(gca,'YtickLabel', str2mat(names{:}),'YTick',1:6,'fontsize',15,...
-        'YMinorTick','on'); title([reg{r}, ' cc13']); 
-        set(gcf,'color','w');
-
-
-%~~~~ Plot Fraction of missing nuclei distributions ~~~~~
-plot_miss12 = cell(1,G); 
-for k=1:G;     plot_miss12{k} = foff{k,r}(cc12{k}|cc11{k} ); end
- figure(30+r); subplot(3,1,3);
-colordef white; set(gcf,'color','w');
-x = linspace(0,1,15);  % range and number of bins for histogram
-xx = linspace(0,1,pts); % range a number of bins for interpolated distribution
- method = 'pcubic'; % method for interpolation
-sigma = .05;  % smoothing factor for interpolation
-CompDist(plot_miss12,x,xx,method,sigma,names,xlab,F)
-ylim([0,.5*ymax]);  title([reg{r}, ' cc11 & 12']);
-
-figure(20+r); subplot(3,1,3); 
-BoxDist(plot_miss12,names,[reg{r}, ' cc11 & 12'],{'30C','22C'});
-xlim([0,1]);
-
-box_data12{r} = plot_miss12;
-
-    P = zeros(G);
-    for j = 1:G
-        for k=1:G
-        P(j,k) = ranksum(plot_miss12{j},plot_miss12{k});
-        end
-    end
-    figure(10+r); subplot(3,1,3); imagesc(P); colormap(jet); colorbar; colordef white; set(gca,'color','w');
-     set(gca,'YtickLabel', str2mat(names{:}),'YTick',1:6,'fontsize',15,...
-        'YMinorTick','on'); title([reg{r}, ' cc11 & 12']); 
-        set(gcf,'color','w');
-    
-% Export Data        
-%      saveas(f1,[fout,'hb_graphs_',reg{r},'.ai'],'ai');
-%      saveas(f2,[fout,'hb_bars_',reg{r},'.ai'],'ai');
-%      saveas(f1,[fout,'hb_graphs_',reg{r},'.jpg'],'jpg');     
-%      saveas(f2,[fout,'hb_bars_',reg{r},'.jpg'],'jpg');
-%      saveas(f3,[fout,'hb_pvals_',reg{r},'.jpg'],'jpg');
-
+    miss_dist_hist = sum(miss_freq)./sum(emb_norm); 
+    data(z,1:20) = miss_dist_hist(1:20); 
+    leg_lab{z} = ['hb ', names{z},'  cc13   N = ',num2str(N)];
 end
 
+plot(data([1,3,5],:)','.-','MarkerSize',10); legend(leg_lab([1,3,5]));
 
+%%
+plot(data([1,3],:)','.-','MarkerSize',10); legend(leg_lab([1,3]));
 
-
-%% 
-
-box_cc13 = [box_data13{2}(1),box_data13{3}(1),    box_data13{2}(3),box_data13{3}(3),     box_data13{2}(5),box_data13{3}(5)];
-figure(1); clf; BoxDist(box_cc13,names([1,1,3,3,5,5]),'missing',{'Boundary','Central'}); title('cycle 13'); xlim([0,.5]);
-figure(1);  set(gcf,'color','w');
-  P = zeros(G);
-    for j = 1:G
-        for k=1:G
-        P(j,k) = ranksum(box_cc13{j},box_cc13{k});
-        end
-    end
-    figure(3); clf;  imagesc(P); colormap(jet); colorbar; colordef white; set(gca,'color','w');
-
-box_cc12 = [box_data12{2}(1),box_data12{3}(1),    box_data12{2}(3),box_data12{3}(3),     box_data12{2}(5),box_data12{3}(5)];
-figure(2); clf; BoxDist(box_cc12,names([1,1,3,3,5,5]),'missing',{'Boundary','Central'}); title('cycle 12');   xlim([0,.5]);
-
-  P = zeros(G);
-    for j = 1:G
-        for k=1:G
-        P(j,k) = ranksum(box_cc12{j},box_cc12{k});
-        end
-    end
-     figure(4); clf; imagesc(P); colormap(jet); colorbar; colordef white; set(gca,'color','w');
-
-
+figure(2); clf;
+bar(data([1,3,5],:)'); legend(leg_lab([1,3,5]));
+set(gca,'FontSize',F);
+xlabel('Distance from edge of expression (cells)');
+ylabel('mean fraction of inactive nuclei'); xlim([0,16.5]);

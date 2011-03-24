@@ -186,7 +186,87 @@ set(gca,'FontSize',F);
  xlim([0,30.5]); ylim([0,.6]); 
  
  
- %%
+ %% new plotting cc14
+ 
+ clear all;
+ 
 data_folder = '/Users/alistair/Documents/Berkeley/Levine_Lab/Projects/Shadow Enhancers/Code_Data/';
 
-  save([data_folder,'hb_ConcDept']);
+  load([data_folder,'hb_ConcDept']);
+  
+  
+  F = 16;
+
+    figure(1); clf; 
+    colordef black;
+    set(gcf,'color','k');
+
+      
+    data = zeros(G,30); 
+    C = flipud(hsv(G));
+    leg_lab = cell(G,1);  
+  
+for z = 1:6
+    emb_set = foff{z}(cc14{z});
+
+    N = length(emb_set); 
+    miss_freq = zeros(N,40); 
+    emb_norm = zeros(N,40); 
+    for n=1:N;
+        L = length(emb_set{n});
+        miss_freq(n,1:L) = emb_set{n};
+        emb_norm(n,1:L) = emb_set{n}>0; 
+    end
+
+    miss_dist_hist = sum(miss_freq)./sum(emb_norm); 
+    data(z,1:30) = miss_dist_hist(1:30); 
+    leg_lab{z} = ['hb ', names{z},'  cc14   N = ',num2str(N)];
+end
+
+plot(data([1,3],:)','.','MarkerSize',10); legend(leg_lab([1,3]));
+
+figure(2); clf; set(gcf,'color','k');
+bar(data([1,3,5],:)'); legend(leg_lab([1,3,5]));
+set(gca,'FontSize',F);
+xlabel('Distance from edge of expression (cells)');
+ylabel('mean fraction of inactive nuclei'); xlim([0,30.5]); ylim([0,.25]); 
+
+%% cc13
+
+
+    figure(1); clf; 
+    colordef black;
+    set(gcf,'color','k');
+
+      
+    data = zeros(G,20); 
+    C = flipud(jet(G));
+    leg_lab = cell(G,1);  
+  
+for z = 1:6
+    emb_set = foff{z}(cc13{z});
+
+    N = length(emb_set); 
+    miss_freq = zeros(N,40); 
+    emb_norm = zeros(N,40); 
+    for n=1:N;
+        L = length(emb_set{n});
+        miss_freq(n,1:L) = emb_set{n};
+        emb_norm(n,1:L) = emb_set{n}>0; 
+    end
+
+    miss_dist_hist = sum(miss_freq)./sum(emb_norm); 
+    data(z,1:20) = miss_dist_hist(1:20); 
+    leg_lab{z} = ['hb ', names{z},'  cc13   N = ',num2str(N)];
+end
+
+plot(data([1,3,5],:)','.-','MarkerSize',10); legend(leg_lab([1,3,5]));
+
+%%
+plot(data([1,3],:)','.-','MarkerSize',10); legend(leg_lab([1,3]));
+
+figure(2); clf;
+bar(data([1,3,5],:)'); legend(leg_lab([1,3,5]));
+set(gca,'FontSize',F);
+xlabel('Distance from edge of expression (cells)');
+ylabel('mean fraction of inactive nuclei'); xlim([0,16.5]);
