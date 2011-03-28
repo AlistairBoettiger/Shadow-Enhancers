@@ -270,3 +270,21 @@ bar(data([1,3,5],:)'); legend(leg_lab([1,3,5]));
 set(gca,'FontSize',F);
 xlabel('Distance from edge of expression (cells)');
 ylabel('mean fraction of inactive nuclei'); xlim([0,16.5]);
+
+%%
+figure(3); clf; set(gcf,'color','k');
+Pdata = data([1,3,5],1:16);
+%Pdata(1,:) = NaN*Pdata(1,:);
+%Pdata(2,:) = NaN*Pdata(2,:);
+len = length(Pdata);
+
+
+
+bar(flipud(1:len)',fliplr(Pdata)'); legend(leg_lab([1,3,5]),'Location','NorthWest');
+set(gca,'FontSize',F);
+set(gca,'Xtick',1:len,'XtickLabel',num2str(fliplr(1:len)'));
+xlabel('Distance from edge of expression (cells)');
+ylabel('mean fraction of inactive nuclei'); xlim([0,17]); ylim([0,.35]); 
+
+
+
