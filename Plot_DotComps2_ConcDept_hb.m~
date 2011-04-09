@@ -5,7 +5,7 @@
 %
 % Alistair Boettiger                                   Date Begun: 03/05/10
 % Levine Lab                                     Functional Since: 03/06/10
-%                                                   Last Modified: 03/21/11
+%                                                   Last Modified: 03/28/11
 
 %% Description
 % comparison
@@ -25,6 +25,7 @@
 % Modified to save data 12/14
 % Modified 12/15 to add additional output: compare center vs boundary
 % Modified 03/21/11 to compare cell-by-cell
+% Modified 03/28/11 to update figure plotting
 %% Source Code
 clear all;
 
@@ -69,8 +70,8 @@ xmin = .2; xmax = .9; ymin = .15; ymax = .4;
 % as fractions of the original image dimensions.  
 
 %%
-for z=1:Zs % k=2;
-    for n=   1:N
+for z=1:Zs % k=2;   z =9
+    for n=   1:N % n = 12   n= 8
         if n<10
             emb = ['0',num2str(n)];
         else
@@ -260,7 +261,7 @@ for z = 1:6
     leg_lab{z} = ['hb ', names{z},'  cc13   N = ',num2str(N)];
 end
 
-plot(data([1,3,5],:)','.-','MarkerSize',10); legend(leg_lab([1,3,5]));
+plot(data([1,3,5],:)','.','MarkerSize',10); legend(leg_lab([1,3,5]));
 
 %%
 plot(data([1,3],:)','.-','MarkerSize',10); legend(leg_lab([1,3]));
@@ -272,7 +273,8 @@ xlabel('Distance from edge of expression (cells)');
 ylabel('mean fraction of inactive nuclei'); xlim([0,16.5]);
 
 %%
-figure(3); clf; set(gcf,'color','k');
+figure(3); clf; % set(gcf,'color','k');
+set(gcf,'color','w'); colordef white; 
 Pdata = data([1,3,5],1:16);
 %Pdata(1,:) = NaN*Pdata(1,:);
 %Pdata(2,:) = NaN*Pdata(2,:);

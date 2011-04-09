@@ -37,8 +37,8 @@ emb_roots = {'MP05_29C_y_sna'; % 1
     'MP10xdl6_25C_pt2'};       % 12
           
 
- names = {'2 enh 22C';
-          '2 enh 30C';
+ names = {'control 22C';
+          'control 30C';
           'no proximal 22C';
           'no proximal 30C';
           'no distal 22C';
@@ -62,8 +62,10 @@ end
 xmin = .2; xmax = .8; ymin = .25; ymax = .75;
 % as fractions of the original image dimensions.  
 
-for z=1:K % k=2;
-    for n=1:N
+showim = 1; 
+
+for z=1:K % z=6;
+    for n=1:N  % n   =29
         if n<10
             emb = ['0',num2str(n)];
         else
@@ -76,7 +78,7 @@ for z=1:K % k=2;
 
         
         if length(pts2) > 700; % only analyze substantial snail regions  
-            
+    %%        
             % Setup first border
             Regd = imdilate(Reg1,strel('disk',5))-Reg1; 
             borderNuc = nonzeros(unique(Regd.*H));
@@ -113,10 +115,24 @@ for z=1:K % k=2;
             J = j-1; 
             layer_off_cnt{z,n} = zeros(1,J); 
             layer_size = zeros(1,J); 
+            bL = zeros(h,w);
+            C = [1,1,1; colormap(jet(10)); 0,0,0]; 
+            
             for j=1:J
                 layer_off_cnt{z,n}(j) = length(intersect(border_ind{j},setdiff(pts2,pts1)));  % total number of missing nuclei in each layer
                 layer_size(j) = length(intersect(border_ind{j},pts2));
+                
+                % plotting
+                if showim == 1 && j>2
+                   bL = bL + j*ismember(H,intersect(border_ind{j},setdiff(pts2,pts1)));
+                  figure(1); clf; imagesc(bL + 5*Cell_bnd); 
+                end
+                
             end
+            colorbar; colormap(C); axes off; 
+         
+            
+    %%        
                 layer_off_rate{z,n} = layer_off_cnt{z,n}./layer_size;
         end 
         
@@ -203,6 +219,7 @@ clear all;
 
 data_folder = '/Users/alistair/Documents/Berkeley/Levine_Lab/Projects/Shadow Enhancers/Code_Data/';
 load([data_folder,'snail_ConcDept']);
+% save([data_folder,'snail_ConcDept']);
 %%
 
 
@@ -301,11 +318,16 @@ F = 16;
     set(gcf,'color','k');
 
       zs = [8,3]; 
+      
+
   % zs = [8,3,7,1]; % no primary +/- dorsal
  %   zs = [4,3,2,1];
-%    zs = [6,5,2,1];
+    zs = [5,3,1];
+
+      Zs = length(zs); 
+    miss_dist_hist = zeros(Zs,40); 
     C = flipud(hsv(8));
-    A = [1,.2]; 
+  
   leg_lab = cell(length(zs),1);  
 for k = 1:length(zs)
     z = zs(k); 
@@ -320,8 +342,8 @@ for k = 1:length(zs)
         emb_norm(n,1:L) = emb_set{n}>0; 
     end
 
-    miss_dist_hist = sum(miss_freq)./sum(emb_norm); 
-    h(k) = bar(miss_dist_hist(1:end),'FaceColor',C(z,:)); hold on; 
+    miss_dist_hist(k,:) = sum(miss_freq)./sum(emb_norm); 
+    h(k) = bar(miss_dist_hist(k,1:end),'FaceColor',C(z,:)); hold on; 
  
   %  plot(miss_dist_hist(2:end),'.','color',C(z,:),'linewidth',3); hold on;
     leg_lab{k} = ['snail ', names{z},'  cc14   N = ',num2str(N)];
@@ -334,6 +356,16 @@ xlabel('distance from sna-boundary (cells)','FontSize',F);
 set(gca,'FontSize',F-4);
 xlim([1.5,8.5]); 
 ylim([0,.55]); 
+
+len = 9;
+figure(4); clf; colordef white; colormap copper;
+set(gcf,'color','w'); barh(flipud(1:len)',fliplr(miss_dist_hist(:,1:len))'); 
+set(gca,'Ytick',1:len,'YtickLabel',num2str(fliplr(1:len)'));
+xlim([0,.4]); ylim([.5,8.5]);
+ylabel('Distance from edge of expression (cells)','FontSize',F);
+xlabel('mean fraction of inactive nuclei','FontSize',F); 
+legend(flipud(leg_lab));
+set(gca,'FontSize',F);
 
 
 %% Compare graphs

@@ -28,7 +28,10 @@ fout = '/Users/alistair/Documents/Berkeley/Levine_Lab/Projects/Shadow Enhancers/
     % Compute region sizes
     
 % dispim = 1;
-     
+   
+  fname = [folder,'/',emb_roots{z},emb,'_data.mat'];
+            load(fname);   
+
     [hbreg,N] = bwlabel(Reg2);  
     
     
@@ -77,13 +80,14 @@ Ntot = max(H(:));
             B(cellbords) = 0;      
            %  figure(1); clf; imagesc(B); colormap hot;
     
-    if nmax < 3*Ntot/4;  
+    if  nmax < 3*Ntot/4;   % nmax < 7*Ntot/9; %  nmax < 5*Ntot/9; % 
         orientation = 0;               
         % Flip embryo
             B = fliplr(B); 
             Reg1 = fliplr(Reg1);
             Reg2 = fliplr(Reg2); 
             L2n1 = fliplr(L2n1);
+            Cell_bnd = fliplr(Cell_bnd); 
             
         % Relabel nuclei
             NucLabeled = bwlabel(B,4);
@@ -121,16 +125,24 @@ hbL =  floor(sqrt(nin)); % length of hb pattern in cells
     end
         
     RegD = RegLabeled;
-        for n=1:min(nin,length(dists))
-            RegD(RegLabeled==n) = dists(n);
+    ns = min(nin,length(dists));
+        for n=1:ns
+            if orientation == 1; 
+                RegD(RegLabeled==n) = dists(n);
+            else
+                 RegD(RegLabeled==n) = dists(ns-n+1);
+            end
         end
         
         % figure(1); clf; imagesc(RegD); colormap(lines);colorbar;
         
+        C = [1,1,1; colormap(jet(15)); 0,0,0]; 
         
+        % C = [1,1,1; colormap(copper(15)); 0,0,0]; 
         MissedD = RegD.*L2n1.*Reg1.*Reg2; % must be inside both regs 
      if dispim == 1
-        figure(2); clf; imagesc(MissedD);colormap lines;
+        figure(2); clf; imagesc(flipud(fliplr(MissedD + 5*Cell_bnd )));  colormap(C);%  lines;
+        axis off; colorbar;
      end
         
         layer_miss_cnt = hist(nonzeros(MissedD(r_inds)),1:hbL);

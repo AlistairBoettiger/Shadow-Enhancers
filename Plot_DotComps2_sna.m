@@ -105,7 +105,8 @@ end
 
 
 %% 
-% clear all;  load snail_SD_012111
+% clear all; 
+load('/Users/alistair/Documents/Berkeley/Levine_Lab/Projects/Shadow Enhancers/Code_Data/snail_SD_011211.mat');
 
 foff{1} = miss_rate{6};                 Nnuc{1} = nd{6}; % 2 enh 22 C, MP10
 foff{2} = [miss_rate{5},miss_rate{8}];  Nnuc{2} = [nd{5},nd{8}]; % 2 enh 30C MP10
@@ -216,6 +217,44 @@ labs = {'30C','22C'};
 figure(30); clf;  
 BoxDist(plot_miss,names,'fraction missed',labs);
 xlim([0,1]);
+
+%%
+
+
+
+%%  expression
+F = 14;
+xlab = 'missed expression';
+
+plot_miss = cell(1,G); 
+for k=1:G;     plot_miss{k} = foff{k}(cc14{k}); end
+  
+ data = plot_miss;
+  Ts = length(data);% number of tracks
+  pW = zeros(Ts);
+  pA = zeros(Ts); 
+  for i=1:Ts
+    for j = 1:Ts
+     pW(i,j) = ranksum(data{i},data{j});   % Wilcox Rank Sum
+     pA(i,j)=anovan([data{i}',data{j}'],{[zeros(1,length(data{i})),ones(1,length(data{j}))]},'display','off'); % 2-way ANOVA
+    end
+  end
+
+  Wpvals = ['   p_{24} = ',num2str(pW(2,4),2) , '    p_{26} = ',num2str(pW(2,6),2) , '    p_{78} = ',num2str(pW(7,8),2) ];
+ figure(4); clf;
+  cumhist(data,names,xlab,F);
+  title(['pairwise Wilcoxon:  ' Wpvals]);
+  set(gcf,'color','w');
+
+disp([names{1},': ' ,num2str(median([data{1}])),'+/-',num2str(std([data{1}])),  ' missed']);
+disp([names{2},': ' ,num2str(median([data{2}])),'+/-',num2str(std([data{2}])),  ' missed']);
+disp([names{3},': ' ,num2str(median([data{3}])),'+/-',num2str(std([data{3}])),  ' missed']);
+
+
+
+
+
+
 
 %%  Compare to bionmial
 
