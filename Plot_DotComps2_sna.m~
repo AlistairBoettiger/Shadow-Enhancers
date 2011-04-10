@@ -253,8 +253,26 @@ disp([names{3},': ' ,num2str(median([data{3}])),'+/-',num2str(std([data{3}])),  
 
 
 
+ figure(3); clf;
+  cumhist(data([1:6]),names([1:6]),xlab,F);
+  title(['pairwise Wilcoxon:  ' ['   p_{24} = ',num2str(pW(2,4),2) , '    p_{26} = ',num2str(pW(2,6),2)  ];]);
+  set(gcf,'color','w');
+
+ figure(5); clf;
+  cumhist(data([1,3,5]),names([1,3,5]),xlab,F);
+  title(['pairwise Wilcoxon:  ' ['   p_{12} = ',num2str(pW(1,3),2) , '    p_{13} = ',num2str(pW(1,5),2) , '    p_{23} = ',num2str(pW(3,5),2) ];]);
+  set(gcf,'color','w');
 
 
+   figure(6); clf;
+  cumhist(data([2,4,6]),names([2,4,6]),xlab,F);
+  title(['pairwise Wilcoxon:  ' ['   p_{12} = ',num2str(pW(2,4),2) , '    p_{13} = ',num2str(pW(2,6),2) , '    p_{23} = ',num2str(pW(4,6),2) ];]);
+  set(gcf,'color','w');
+  
+   figure(7); clf;
+  cumhist(data([1,3,7,8]),names([1,3,7,8]),xlab,F);
+  title(['pairwise Wilcoxon:  ' ['   p_{13} = ',num2str(pW(2,7),2) , '    p_{24} = ',num2str(pW(3,8),2)  ];]);
+  set(gcf,'color','w');
 
 %%  Compare to bionmial
 
