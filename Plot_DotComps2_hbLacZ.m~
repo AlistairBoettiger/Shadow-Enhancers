@@ -19,7 +19,7 @@
 %% Source Code
 clear all;
 
-folder =  '/Volumes/Data/Lab Data/Shadow_data/Processed'; % upload data 
+folder =  '/Volumes/Data/Lab Data/Shadow_data/Processed/'; % upload data 
 data_folder = '/Users/alistair/Documents/Berkeley/Levine_Lab/Projects/Shadow Enhancers/Code_Data/'; % export folder
 
 emb_roots ={ 
@@ -196,9 +196,9 @@ rept = cell(1,G);
  Apvals = ['p_{38} = ',num2str(pA(3,8),2), '   p_{49} = ',num2str(pA(4,9),2) , '    p_{38} = ',num2str(pA(5,10),2)  ];
  disp(['30C pairwise Wilcoxon rank sum:  ', Wpvals]);
  disp(['2-way ANOVA:  ',Apvals]);
- 
- figure(1); clf;
- cityscape(data,names,xlab,F);
+%  
+%  figure(1); clf;
+%  cityscape(data,names,xlab,F);
  
  figure(3); clf;
   cumhist(data,names,xlab,F);
@@ -223,6 +223,8 @@ plot_miss = cell(1,G);
 
 
   data = plot_miss;    
+  
+  
   Ts = length(data);% number of tracks
   pW = zeros(Ts);
   pA = zeros(Ts); 
@@ -232,16 +234,16 @@ plot_miss = cell(1,G);
      pA(i,j)=anovan([data{i}',data{j}'],{[zeros(1,length(data{i})),ones(1,length(data{j}))]},'display','off'); % 2-way ANOVA
     end
   end
- Wpvals = ['p_{34} = ',num2str(pW(3,4),2), '   p_{35} = ',num2str(pW(3,5),2) , '    p_{45} = ',num2str(pW(4,5),2)  ];
+ Wpvals = ['p_{12} = ',num2str(pW(3,4),2), '   p_{13} = ',num2str(pW(3,5),2) , '    p_{23} = ',num2str(pW(4,5),2)  ];
  Apvals = ['p_{34} = ',num2str(pA(3,4),2), '   p_{35} = ',num2str(pA(3,5),2) , '    p_{23} = ',num2str(pA(4,5),2)  ];
  disp(['pairwise Wilcoxon rank sum:  ', Wpvals]);
  disp(['2-way ANOVA:  ',Apvals]);
  
- figure(1); clf;
- cityscape(data,names,xlab,F);
+%  figure(1); clf;
+%  cityscape(data,names,xlab,F);
  
  figure(3); clf;
-  cumhist(data,names,xlab,F);
+  cumhist(data([2:5]),names([2:5]),xlab,F);
   title(['pairwise Wilcoxon:  ' Wpvals]);
   set(gcf,'color','w');
 

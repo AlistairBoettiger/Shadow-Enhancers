@@ -11,7 +11,7 @@ function Im_seg = endVrept(folder,name,norm,scale,f)
 
 
     Ymax = 250;
-    Nstrength = .7;
+    Nstrength = .8;
 
    load([folder,name]); 
     age = getage(H,cent);
