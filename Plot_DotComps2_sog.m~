@@ -203,3 +203,58 @@ disp([names{3}, ': ' ,num2str(median([data{3}])),'+/-',num2str(std([data{3}])), 
 disp([names{4}, ': ' ,num2str(median([data{4}])),'+/-',num2str(std([data{4}])),  ' missing']);
 disp([names{5}, ': ' ,num2str(median([data{5}])),'+/-',num2str(std([data{5}])),  ' missing']);
 disp([names{6}, ': ' ,num2str(median([data{6}])),'+/-',num2str(std([data{6}])),  ' missing']);
+
+%%
+xlab = 'variability in total transcript (\sigma/\mu)';
+
+
+plot_lowon = cell(1,G); 
+for k=1:G; plot_lowon{k} = (lowon{k}(cc14{k})); end
+ data = plot_lowon;    
+
+%for k=1:G;  data{k} = cell_var{k}(cc14{k}); end
+
+
+
+  Ts = length(data);% number of tracks
+  pW = zeros(Ts);
+  pA = zeros(Ts); 
+  for i=1:Ts
+    for j = 1:Ts
+     pW(i,j) = ranksum(data{i},data{j});   % Wilcox Rank Sum
+     pA(i,j)=anovan([data{i}',data{j}'],{[zeros(1,length(data{i})),ones(1,length(data{j}))]},'display','off'); % 2-way ANOVA
+    end
+  end
+ Wpvals = ['p_{} = ',num2str(pW(1,2),2), '   p_{} = ',num2str(pW(1,3),2) , '    p_{} = ',num2str(pW(2,3),2)  ];
+ Apvals = ['p_{12} = ',num2str(pA(1,2),2), '   p_{13} = ',num2str(pA(1,3),2) , '    p_{23} = ',num2str(pA(2,3),2)  ];
+ disp(['pairwise Wilcoxon rank sum:  ', Wpvals]);
+ disp(['2-way ANOVA:  ',Apvals]);
+ 
+ 
+ figure(5); clf; imagesc(log10(pW)); colormap(bone);
+   set(gcf,'color','w');
+   set(gca,'YTickLabel',names); colorbar; 
+   title('log p-values');
+
+ 
+ figure(3); clf;
+  cumhist(data([1,3,5]),names([1,3,5]),xlab,F);
+  title(['pairwise Wilcoxon:  ' ['p_{12} = ',num2str(pW(1,3),2), '   p_{13} = ',num2str(pW(1,5),2) , '    p_{23} = ',num2str(pW(3,5),2)  ];]);
+  set(gcf,'color','w');
+
+
+   figure(4); clf;
+  cumhist(data([2,4,6]),names([2,4,6]),xlab,F);
+
+  title(['pairwise Wilcoxon:  ' ['p_{12} = ',num2str(pW(2,4),2), '   p_{13} = ',num2str(pW(2,6),2) , '    p_{23} = ',num2str(pW(4,6),2)  ];]);
+  set(gcf,'color','w');
+
+  
+
+  disp([names{1}, ': ' ,num2str(median([data{1}])),'+/-',num2str(std([data{1}])),  ' missing']);
+disp([names{2}, ': ' ,num2str(median([data{2}])),'+/-',num2str(std([data{2}])),  ' missing']);
+disp([names{3}, ': ' ,num2str(median([data{3}])),'+/-',num2str(std([data{3}])),  ' missing']);
+disp([names{4}, ': ' ,num2str(median([data{4}])),'+/-',num2str(std([data{4}])),  ' missing']);
+disp([names{5}, ': ' ,num2str(median([data{5}])),'+/-',num2str(std([data{5}])),  ' missing']);
+disp([names{6}, ': ' ,num2str(median([data{6}])),'+/-',num2str(std([data{6}])),  ' missing']);
+
